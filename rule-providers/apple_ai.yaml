@@ -1,4 +1,10 @@
 payload:
-  - DOMAIN-KEYWORD,guzzoni
-  - DOMAIN-KEYWORD,assistant
-  - DOMAIN-KEYWORD,intelligence
+  # iCloud Private Relay / Apple Intelligence 相关
+  - DOMAIN-SUFFIX,mask.icloud.com
+  - DOMAIN-SUFFIX,mask-h2.icloud.com
+  - DOMAIN-SUFFIX,mask-api.icloud.com
+  - DOMAIN-SUFFIX,mask.apple-dns.net
+
+  # Siri/assistant 常见
+  - DOMAIN-SUFFIX,guzzoni.apple.com
+  - DOMAIN-SUFFIX,smoot.apple.com

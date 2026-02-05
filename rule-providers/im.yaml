@@ -1,0 +1,7 @@
+payload:
+  - DOMAIN-SUFFIX,t.me
+  - DOMAIN-SUFFIX,telegram.org
+  - IP-CIDR,91.108.0.0/16
+  - DOMAIN-SUFFIX,whatsapp.com
+  - DOMAIN-SUFFIX,whatsapp.net
+  - DOMAIN,wa.me

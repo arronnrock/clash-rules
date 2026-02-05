@@ -1,0 +1,12 @@
+payload:
+  - DOMAIN-SUFFIX,music.apple.com
+  - DOMAIN-SUFFIX,applemusic.com
+  - DOMAIN,tv.apple.com
+  - DOMAIN-SUFFIX,tv.apple.com
+  - DOMAIN-SUFFIX,apple.news
+  - DOMAIN-SUFFIX,news.apple.com
+
+  # Apple 商店/媒体内容常用域（美区 Apple ID / Apple One 常用）
+  - DOMAIN-SUFFIX,itunes.apple.com
+  - DOMAIN-SUFFIX,apps.apple.com
+  - DOMAIN-SUFFIX,mzstatic.com

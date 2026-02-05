@@ -1,0 +1,6 @@
+payload:
+  - DOMAIN,gemini.google.com
+  - DOMAIN,bard.google.com
+  - DOMAIN,proactivebackend-pa.googleapis.com
+  - DOMAIN,generativelanguage.googleapis.com
+  - DOMAIN-SUFFIX,ai.google.dev

@@ -1,4 +1,32 @@
 {
+  "dns": {
+    "enable": true,
+    "ipv6": false,
+    "listen": "0.0.0.0:1053",
+    "enhanced-mode": "redir-host",
+    "nameserver": [
+      "223.5.5.5",
+      "119.29.29.29"
+    ],
+    "fallback": [
+      "https://1.1.1.1/dns-query",
+      "https://8.8.8.8/dns-query"
+    ],
+    "fallback-filter": {
+      "geoip": true,
+      "geoip-code": "CN"
+    },
+    "nameserver-policy": {
+      "e.szridge.com": [
+        "10.0.0.1",
+        "10.0.0.200"
+      ],
+      "*.szridge.com": [
+        "10.0.0.1",
+        "10.0.0.200"
+      ]
+    }
+  },
   "proxy-groups": [
     {
       "name": "PROXY",

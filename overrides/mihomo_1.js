@@ -24,7 +24,7 @@
       "name": "US",
       "type": "url-test",
       "include-all": true,
-      "filter": "(?i)(\\bUS\\b|USA|United\\s*States|美国|洛杉矶|圣何塞|西雅图|达拉斯|纽约|s1|s2|s3)",
+      "filter": "(?i)(\\bUS\\b|USA|United\\s*States|美国|洛杉矶|圣何塞|西雅图|达拉斯|纽约|c87s1|c87s2|c87s3)",
       "url": "https://cp.cloudflare.com/generate_204",
       "interval": 300,
       "tolerance": 100
@@ -33,7 +33,7 @@
       "name": "JP",
       "type": "url-test",
       "include-all": true,
-      "filter": "(?i)(\\bJP\\b|Japan|日本|东京|大阪|埼玉|s4)",
+      "filter": "(?i)(\\bJP\\b|Japan|日本|东京|大阪|埼玉|c87s4)",
       "url": "https://cp.cloudflare.com/generate_204",
       "interval": 300,
       "tolerance": 100
@@ -60,7 +60,7 @@
       "name": "JMS-US-PIN",
       "type": "select",
       "include-all": true,
-      "filter": "(?i)(\\bs1\\b|\\bs2\\b|\\bs3\\b)",
+      "filter": "(?i)(c87s1|c87s2|c87s3)",
       "proxies": [
         "DIRECT"
       ]
@@ -69,7 +69,7 @@
       "name": "JMS-JP-PIN",
       "type": "select",
       "include-all": true,
-      "filter": "(?i)(\\bs4\\b)",
+      "filter": "(?i)(c87s4)",
       "proxies": [
         "DIRECT"
       ]

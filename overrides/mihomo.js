@@ -147,6 +147,80 @@
       ]
     }
   ],
+  "rule-providers": {
+    "openai": {
+      "type": "http",
+      "behavior": "domain",
+      "format": "yaml",
+      "url": "https://raw.githubusercontent.com/arronnrock/clash-rules/main/rule-providers/openai.yaml",
+      "path": "./rule-providers/openai.yaml",
+      "interval": 86400
+    },
+    "apple_ai": {
+      "type": "http",
+      "behavior": "domain",
+      "format": "yaml",
+      "url": "https://raw.githubusercontent.com/arronnrock/clash-rules/main/rule-providers/apple_ai.yaml",
+      "path": "./rule-providers/apple_ai.yaml",
+      "interval": 86400
+    },
+    "apple_media": {
+      "type": "http",
+      "behavior": "domain",
+      "format": "yaml",
+      "url": "https://raw.githubusercontent.com/arronnrock/clash-rules/main/rule-providers/apple_media.yaml",
+      "path": "./rule-providers/apple_media.yaml",
+      "interval": 86400
+    },
+    "gemini": {
+      "type": "http",
+      "behavior": "domain",
+      "format": "yaml",
+      "url": "https://raw.githubusercontent.com/arronnrock/clash-rules/main/rule-providers/gemini.yaml",
+      "path": "./rule-providers/gemini.yaml",
+      "interval": 86400
+    },
+    "google": {
+      "type": "http",
+      "behavior": "domain",
+      "format": "yaml",
+      "url": "https://raw.githubusercontent.com/arronnrock/clash-rules/main/rule-providers/google.yaml",
+      "path": "./rule-providers/google.yaml",
+      "interval": 86400
+    },
+    "im": {
+      "type": "http",
+      "behavior": "domain",
+      "format": "yaml",
+      "url": "https://raw.githubusercontent.com/arronnrock/clash-rules/main/rule-providers/im.yaml",
+      "path": "./rule-providers/im.yaml",
+      "interval": 86400
+    },
+    "paypal": {
+      "type": "http",
+      "behavior": "domain",
+      "format": "yaml",
+      "url": "https://raw.githubusercontent.com/arronnrock/clash-rules/main/rule-providers/paypal.yaml",
+      "path": "./rule-providers/paypal.yaml",
+      "interval": 86400
+    },
+    "youtube": {
+      "type": "http",
+      "behavior": "domain",
+      "format": "yaml",
+      "url": "https://raw.githubusercontent.com/arronnrock/clash-rules/main/rule-providers/youtube.yaml",
+      "path": "./rule-providers/youtube.yaml",
+      "interval": 86400
+    },
+    "nsfw": {
+      "type": "http",
+      "behavior": "domain",
+      "format": "yaml",
+      "url": "https://raw.githubusercontent.com/arronnrock/clash-rules/main/rule-providers/nsfw.yaml",
+      "path": "./rule-providers/nsfw.yaml",
+      "interval": 86400
+    }
+  },
   "rules": [
     "DOMAIN,e.szridge.com,DIRECT",
     "DOMAIN-SUFFIX,szridge.com,DIRECT",

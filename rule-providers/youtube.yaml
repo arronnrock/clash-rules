@@ -1,4 +1,4 @@
 payload:
-  - DOMAIN-SUFFIX,youtube.com
-  - DOMAIN-SUFFIX,ytimg.com
-  - DOMAIN-SUFFIX,googlevideo.com
+  - youtube.com
+  - ytimg.com
+  - googlevideo.com

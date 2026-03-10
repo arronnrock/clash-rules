@@ -1,27 +1,27 @@
 payload:
   # --- OpenAI 主域 ---
-  - DOMAIN-SUFFIX,openai.com
-  - DOMAIN-SUFFIX,chatgpt.com
-  - DOMAIN-SUFFIX,oaistatic.com
-  - DOMAIN-SUFFIX,oaiusercontent.com
-  - DOMAIN-SUFFIX,openaiapi-site.azureedge.net
+  - openai.com
+  - chatgpt.com
+  - oaistatic.com
+  - oaiusercontent.com
+  - openaiapi-site.azureedge.net
 
   # --- API / CDN ---
-  - DOMAIN-SUFFIX,api.openai.com
-  - DOMAIN-SUFFIX,cdn.openai.com
-  - DOMAIN-SUFFIX,files.openai.com
+  - api.openai.com
+  - cdn.openai.com
+  - files.openai.com
 
-  # --- ChatGPT Web Assets ---
-  - DOMAIN-SUFFIX,chat.openai.com
-  - DOMAIN-SUFFIX,chatgptusercontent.com
+  # --- ChatGPT Web ---
+  - chat.openai.com
+  - chatgptusercontent.com
 
-  # --- Auth / 登录相关 ---
-  - DOMAIN-SUFFIX,auth0.com
-  - DOMAIN-SUFFIX,auth.openai.com
+  # --- Auth ---
+  - auth0.com
+  - auth.openai.com
 
-  # --- Sora / 新模型资源域 ---
-  - DOMAIN-SUFFIX,sora.com
-  - DOMAIN-SUFFIX,sora.chat
+  # --- Sora ---
+  - sora.com
+  - sora.chat
 
-  # --- OpenAI 静态资源边缘域 ---
-  - DOMAIN-SUFFIX,openai.azureedge.net
+  # --- Edge CDN ---
+  - openai.azureedge.net

@@ -4,8 +4,6 @@ payload:
   - tv.apple.com
   - apple.news
   - news.apple.com
-
-  # Apple Store / Apple One / 媒体资源
   - itunes.apple.com
   - apps.apple.com
   - mzstatic.com

@@ -1,7 +1,15 @@
 payload:
-  - DOMAIN-SUFFIX,t.me
-  - DOMAIN-SUFFIX,telegram.org
-  - IP-CIDR,91.108.0.0/16
-  - DOMAIN-SUFFIX,whatsapp.com
-  - DOMAIN-SUFFIX,whatsapp.net
-  - DOMAIN,wa.me
+  - t.me
+  - telegram.org
+  - telegram.me
+  - telegram.dog
+  - tdesktop.com
+  - telegra.ph
+
+  - whatsapp.com
+  - whatsapp.net
+  - wa.me
+
+  # Turrit 相关
+  - turrit.com
+  - turrit.app

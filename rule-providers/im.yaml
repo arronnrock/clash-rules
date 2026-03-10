@@ -1,12 +1,22 @@
 payload:
+  # Telegram
   - t.me
   - telegram.org
   - telegram.me
   - telegram.dog
   - tdesktop.com
   - telegra.ph
+  - graph.org
+
+  # Telegram Web / CDN 常见
+  - tg.dev
+  - tx.me
+
+  # WhatsApp
   - whatsapp.com
   - whatsapp.net
   - wa.me
+
+  # Turrit
   - turrit.com
   - turrit.app

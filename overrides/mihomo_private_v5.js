@@ -117,8 +117,7 @@
       "proxies": [
         "JMS-US-PIN",
         "US",
-        "JP",
-        "DIRECT"
+        "JP"
       ]
     },
     {
@@ -128,9 +127,7 @@
         "JMS-US-PIN",
         "JMS-JP-PIN",
         "US",
-        "JP",
-        "PROXY",
-        "DIRECT"
+        "JP"
       ]
     },
     {
@@ -151,8 +148,7 @@
       "proxies": [
         "JMS-US-PIN",
         "US",
-        "JP",
-        "DIRECT"
+        "JP"
       ]
     },
     {

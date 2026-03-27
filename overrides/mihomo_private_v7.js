@@ -50,7 +50,6 @@
         "DIRECT"
       ]
     },
-
     {
       "name": "Auto",
       "type": "url-test",
@@ -59,7 +58,6 @@
       "interval": 300,
       "tolerance": 80
     },
-
     {
       "name": "🇺🇸US",
       "type": "url-test",
@@ -69,7 +67,6 @@
       "interval": 300,
       "tolerance": 100
     },
-
     {
       "name": "🇯🇵JP",
       "type": "url-test",
@@ -79,7 +76,6 @@
       "interval": 300,
       "tolerance": 100
     },
-
     {
       "name": "🇭🇰HK",
       "type": "url-test",
@@ -89,7 +85,6 @@
       "interval": 300,
       "tolerance": 100
     },
-
     {
       "name": "🇸🇬SG",
       "type": "url-test",
@@ -99,7 +94,6 @@
       "interval": 300,
       "tolerance": 100
     },
-
     {
       "name": "🇲🇾MY",
       "type": "url-test",
@@ -109,7 +103,6 @@
       "interval": 300,
       "tolerance": 100
     },
-
     {
       "name": "🇰🇷KR",
       "type": "url-test",
@@ -119,7 +112,6 @@
       "interval": 300,
       "tolerance": 100
     },
-
     {
       "name": "🇦🇺AU",
       "type": "url-test",
@@ -129,7 +121,6 @@
       "interval": 300,
       "tolerance": 100
     },
-
     {
       "name": "🇩🇪DE",
       "type": "url-test",
@@ -139,7 +130,6 @@
       "interval": 300,
       "tolerance": 100
     },
-
     {
       "name": "🇬🇧UK",
       "type": "url-test",
@@ -149,7 +139,6 @@
       "interval": 300,
       "tolerance": 100
     },
-
     {
       "name": "🇳🇱NL",
       "type": "url-test",
@@ -159,7 +148,6 @@
       "interval": 300,
       "tolerance": 100
     },
-
     {
       "name": "🇹🇷TR",
       "type": "url-test",
@@ -169,7 +157,6 @@
       "interval": 300,
       "tolerance": 100
     },
-
     {
       "name": "🇨🇳TW",
       "type": "url-test",
@@ -179,51 +166,282 @@
       "interval": 300,
       "tolerance": 100
     },
-
     {
       "name": "🇺🇸US-PIN",
       "type": "select",
       "include-all": true,
       "filter": "(?i)(c87s1|c87s2|c87s3|🇺🇸US\\d+|US\\d+)",
-      "proxies": ["DIRECT"]
+      "proxies": [
+        "DIRECT"
+      ]
     },
-
     {
       "name": "🇯🇵JP-PIN",
       "type": "select",
       "include-all": true,
       "filter": "(?i)(c87s4|🇯🇵JP\\d+|JP\\d+)",
-      "proxies": ["DIRECT"]
+      "proxies": [
+        "DIRECT"
+      ]
     },
-
     {
       "name": "US-STRICT",
       "type": "select",
-      "proxies": ["🇺🇸US-PIN", "🇺🇸US", "DIRECT"]
+      "proxies": [
+        "🇺🇸US-PIN",
+        "🇺🇸US",
+        "DIRECT"
+      ]
     },
-
     {
       "name": "APPLE-AI",
       "type": "select",
-      "proxies": ["🇺🇸US-PIN", "🇺🇸US", "🇯🇵JP"]
+      "proxies": [
+        "🇺🇸US-PIN",
+        "🇺🇸US",
+        "🇯🇵JP"
+      ]
     },
-
     {
       "name": "OPENAI",
       "type": "select",
-      "proxies": ["🇺🇸US-PIN", "🇯🇵JP-PIN", "🇺🇸US", "🇯🇵JP"]
+      "proxies": [
+        "🇺🇸US-PIN",
+        "🇯🇵JP-PIN",
+        "🇺🇸US",
+        "🇯🇵JP"
+      ]
     },
-
     {
       "name": "AI",
       "type": "select",
-      "proxies": ["🇺🇸US-PIN", "🇯🇵JP-PIN", "🇺🇸US", "🇯🇵JP", "PROXY", "DIRECT"]
+      "proxies": [
+        "🇺🇸US-PIN",
+        "🇯🇵JP-PIN",
+        "🇺🇸US",
+        "🇯🇵JP",
+        "PROXY",
+        "DIRECT"
+      ]
     },
-
     {
       "name": "GOOGLE",
       "type": "select",
-      "proxies": ["🇺🇸US-PIN", "🇺🇸US", "🇯🇵JP", "🇭🇰HK", "🇸🇬SG"]
+      "proxies": [
+        "🇺🇸US-PIN",
+        "🇺🇸US",
+        "🇯🇵JP",
+        "🇭🇰HK",
+        "🇸🇬SG"
+      ]
+    },
+    {
+      "name": "STREAM",
+      "type": "url-test",
+      "proxies": [
+        "🇭🇰HK",
+        "🇸🇬SG",
+        "🇺🇸US",
+        "🇯🇵JP",
+        "PROXY"
+      ],
+      "url": "https://cp.cloudflare.com/generate_204",
+      "interval": 300,
+      "tolerance": 100
+    },
+    {
+      "name": "YouTube",
+      "type": "url-test",
+      "proxies": [
+        "🇺🇸US",
+        "🇭🇰HK",
+        "🇯🇵JP",
+        "PROXY"
+      ],
+      "url": "https://cp.cloudflare.com/generate_204",
+      "interval": 300,
+      "tolerance": 100
+    },
+    {
+      "name": "TELEGRAM",
+      "type": "select",
+      "proxies": [
+        "🇭🇰HK",
+        "🇸🇬SG",
+        "🇨🇳TW",
+        "🇰🇷KR",
+        "🇯🇵JP",
+        "🇺🇸US",
+        "🇺🇸US-PIN",
+        "🇯🇵JP-PIN"
+      ]
+    },
+    {
+      "name": "TG-API",
+      "type": "select",
+      "proxies": [
+        "🇭🇰HK",
+        "🇸🇬SG",
+        "🇯🇵JP-PIN",
+        "🇺🇸US-PIN",
+        "🇯🇵JP",
+        "🇺🇸US"
+      ]
+    },
+    {
+      "name": "WHATSAPP",
+      "type": "url-test",
+      "proxies": [
+        "🇭🇰HK",
+        "🇸🇬SG",
+        "🇯🇵JP",
+        "🇺🇸US",
+        "🇲🇾MY",
+        "🇰🇷KR",
+        "🇨🇳TW"
+      ],
+      "url": "https://cp.cloudflare.com/generate_204",
+      "interval": 240,
+      "tolerance": 80
+    },
+    {
+      "name": "NSFW",
+      "type": "select",
+      "proxies": [
+        "STREAM",
+        "🇭🇰HK",
+        "🇸🇬SG",
+        "🇺🇸US",
+        "🇯🇵JP",
+        "PROXY"
+      ]
     }
+  ],
+  "rule-providers": {
+    "openai": {
+      "type": "http",
+      "behavior": "domain",
+      "format": "yaml",
+      "url": "https://raw.githubusercontent.com/arronnrock/clash-rules/main/rule-providers/openai.yaml",
+      "path": "./rule-providers/openai.yaml",
+      "interval": 86400
+    },
+    "apple_ai": {
+      "type": "http",
+      "behavior": "domain",
+      "format": "yaml",
+      "url": "https://raw.githubusercontent.com/arronnrock/clash-rules/main/rule-providers/apple_ai.yaml",
+      "path": "./rule-providers/apple_ai.yaml",
+      "interval": 86400
+    },
+    "apple_media": {
+      "type": "http",
+      "behavior": "domain",
+      "format": "yaml",
+      "url": "https://raw.githubusercontent.com/arronnrock/clash-rules/main/rule-providers/apple_media.yaml",
+      "path": "./rule-providers/apple_media.yaml",
+      "interval": 86400
+    },
+    "gemini": {
+      "type": "http",
+      "behavior": "domain",
+      "format": "yaml",
+      "url": "https://raw.githubusercontent.com/arronnrock/clash-rules/main/rule-providers/gemini.yaml",
+      "path": "./rule-providers/gemini.yaml",
+      "interval": 86400
+    },
+    "google": {
+      "type": "http",
+      "behavior": "domain",
+      "format": "yaml",
+      "url": "https://raw.githubusercontent.com/arronnrock/clash-rules/main/rule-providers/google.yaml",
+      "path": "./rule-providers/google.yaml",
+      "interval": 86400
+    },
+    "telegram": {
+      "type": "http",
+      "behavior": "domain",
+      "format": "yaml",
+      "url": "https://raw.githubusercontent.com/arronnrock/clash-rules/main/rule-providers/telegram.yaml",
+      "path": "./rule-providers/telegram.yaml",
+      "interval": 86400
+    },
+    "whatsapp": {
+      "type": "http",
+      "behavior": "domain",
+      "format": "yaml",
+      "url": "https://raw.githubusercontent.com/arronnrock/clash-rules/main/rule-providers/whatsapp.yaml",
+      "path": "./rule-providers/whatsapp.yaml",
+      "interval": 86400
+    },
+    "paypal": {
+      "type": "http",
+      "behavior": "domain",
+      "format": "yaml",
+      "url": "https://raw.githubusercontent.com/arronnrock/clash-rules/main/rule-providers/paypal.yaml",
+      "path": "./rule-providers/paypal.yaml",
+      "interval": 86400
+    },
+    "youtube": {
+      "type": "http",
+      "behavior": "domain",
+      "format": "yaml",
+      "url": "https://raw.githubusercontent.com/arronnrock/clash-rules/main/rule-providers/youtube.yaml",
+      "path": "./rule-providers/youtube.yaml",
+      "interval": 86400
+    },
+    "nsfw": {
+      "type": "http",
+      "behavior": "domain",
+      "format": "yaml",
+      "url": "https://raw.githubusercontent.com/arronnrock/clash-rules/main/rule-providers/nsfw.yaml",
+      "path": "./rule-providers/nsfw.yaml",
+      "interval": 86400
+    }
+  },
+  "rules": [
+    "DOMAIN,e.szridge.com,DIRECT",
+    "DOMAIN-SUFFIX,szridge.com,DIRECT",
+    "IP-CIDR,10.0.0.0/8,DIRECT,no-resolve",
+    "IP-CIDR,172.16.0.0/12,DIRECT,no-resolve",
+    "IP-CIDR,192.168.0.0/16,DIRECT,no-resolve",
+
+    "RULE-SET,apple_ai,APPLE-AI",
+
+    "DOMAIN-SUFFIX,chatgpt.com,OPENAI",
+    "DOMAIN-SUFFIX,ws.chatgpt.com,OPENAI",
+    "DOMAIN-SUFFIX,openai.com,OPENAI",
+    "DOMAIN-SUFFIX,ios.chat.openai.com,OPENAI",
+    "DOMAIN-SUFFIX,oaistatic.com,OPENAI",
+    "DOMAIN-SUFFIX,oaiusercontent.com,OPENAI",
+    "DOMAIN-SUFFIX,cdn.openai.com,OPENAI",
+    "DOMAIN-SUFFIX,files.openai.com,OPENAI",
+    "RULE-SET,openai,OPENAI",
+
+    "RULE-SET,apple_media,US-STRICT",
+
+    "DOMAIN-SUFFIX,connectivitycheck.gstatic.com,GOOGLE",
+    "DOMAIN-SUFFIX,gstatic.com,GOOGLE",
+    "DOMAIN-SUFFIX,googleapis.com,GOOGLE",
+    "DOMAIN-SUFFIX,gemini.google.com,GOOGLE",
+    "DOMAIN-SUFFIX,bard.google.com,GOOGLE",
+    "DOMAIN-SUFFIX,generativelanguage.googleapis.com,GOOGLE",
+    "DOMAIN-SUFFIX,proactivebackend-pa.googleapis.com,GOOGLE",
+    "DOMAIN-SUFFIX,ai.google.dev,GOOGLE",
+    "RULE-SET,gemini,GOOGLE",
+    "RULE-SET,google,GOOGLE",
+
+    "DOMAIN-SUFFIX,api.telegram.org,TG-API",
+    "IP-CIDR,91.108.0.0/16,TELEGRAM,no-resolve",
+    "IP-CIDR,149.154.160.0/20,TELEGRAM,no-resolve",
+    "RULE-SET,telegram,TELEGRAM",
+
+    "RULE-SET,whatsapp,WHATSAPP",
+
+    "RULE-SET,youtube,YouTube",
+    "RULE-SET,paypal,US-STRICT",
+    "RULE-SET,nsfw,NSFW",
+    "GEOIP,CN,DIRECT",
+    "MATCH,PROXY"
   ]
 }

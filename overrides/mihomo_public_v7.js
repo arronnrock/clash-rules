@@ -26,13 +26,6 @@
         "🇯🇵JP",
         "🇭🇰HK",
         "🇸🇬SG",
-        "🇲🇾MY",
-        "🇰🇷KR",
-        "🇦🇺AU",
-        "🇩🇪DE",
-        "🇬🇧UK",
-        "🇳🇱NL",
-        "🇹🇷TR",
         "🇨🇳TW",
         "DIRECT"
       ]
@@ -49,19 +42,13 @@
       "name": "🇺🇸US",
       "type": "select",
       "include-all": true,
-      "filter": "(?i)(\\bUS\\b|USA|United\\s*States|美国|洛杉矶|圣何塞|西雅图|达拉斯|纽约|c87s1|c87s2|c87s3|🇺🇸US\\d+|US\\d+)",
-      "proxies": [
-        "DIRECT"
-      ]
+      "filter": "(?i)(\\bUS\\b|USA|United\\s*States|美国|洛杉矶|圣何塞|西雅图|达拉斯|纽约|c87s1|c87s2|c87s3|🇺🇸US\\d+|US\\d+)"
     },
     {
       "name": "🇯🇵JP",
       "type": "select",
       "include-all": true,
-      "filter": "(?i)(\\bJP\\b|Japan|日本|东京|大阪|埼玉|c87s4|🇯🇵JP\\d+|JP\\d+)",
-      "proxies": [
-        "DIRECT"
-      ]
+      "filter": "(?i)(\\bJP\\b|Japan|日本|东京|大阪|埼玉|c87s4|🇯🇵JP\\d+|JP\\d+)"
     },
     {
       "name": "🇭🇰HK",
@@ -77,69 +64,6 @@
       "type": "url-test",
       "include-all": true,
       "filter": "(?i)(\\bSG\\b|Singapore|新加坡|🇸🇬SG\\d+|SG\\d+)",
-      "url": "https://cp.cloudflare.com/generate_204",
-      "interval": 300,
-      "tolerance": 100
-    },
-    {
-      "name": "🇲🇾MY",
-      "type": "url-test",
-      "include-all": true,
-      "filter": "(?i)(\\bMY\\b|Malaysia|马来西亚|🇲🇾MY\\d+|MY\\d+)",
-      "url": "https://cp.cloudflare.com/generate_204",
-      "interval": 300,
-      "tolerance": 100
-    },
-    {
-      "name": "🇰🇷KR",
-      "type": "url-test",
-      "include-all": true,
-      "filter": "(?i)(\\bKR\\b|Korea|韩国|首尔|🇰🇷KR\\d+|KR\\d+)",
-      "url": "https://cp.cloudflare.com/generate_204",
-      "interval": 300,
-      "tolerance": 100
-    },
-    {
-      "name": "🇦🇺AU",
-      "type": "url-test",
-      "include-all": true,
-      "filter": "(?i)(\\bAU\\b|Australia|澳大利亚|悉尼|🇦🇺AU\\d+|AU\\d+)",
-      "url": "https://cp.cloudflare.com/generate_204",
-      "interval": 300,
-      "tolerance": 100
-    },
-    {
-      "name": "🇩🇪DE",
-      "type": "url-test",
-      "include-all": true,
-      "filter": "(?i)(\\bDE\\b|Germany|德国|法兰克福|🇩🇪DE\\d+|DE\\d+)",
-      "url": "https://cp.cloudflare.com/generate_204",
-      "interval": 300,
-      "tolerance": 100
-    },
-    {
-      "name": "🇬🇧UK",
-      "type": "url-test",
-      "include-all": true,
-      "filter": "(?i)(\\bUK\\b|United\\s*Kingdom|Britain|英国|伦敦|🇬🇧UK\\d+|UK\\d+)",
-      "url": "https://cp.cloudflare.com/generate_204",
-      "interval": 300,
-      "tolerance": 100
-    },
-    {
-      "name": "🇳🇱NL",
-      "type": "url-test",
-      "include-all": true,
-      "filter": "(?i)(\\bNL\\b|Netherlands|荷兰|阿姆斯特丹|🇳🇱NL\\d+|NL\\d+)",
-      "url": "https://cp.cloudflare.com/generate_204",
-      "interval": 300,
-      "tolerance": 100
-    },
-    {
-      "name": "🇹🇷TR",
-      "type": "url-test",
-      "include-all": true,
-      "filter": "(?i)(\\bTR\\b|Turkey|土耳其|伊斯坦布尔|🇹🇷TR\\d+|TR\\d+)",
       "url": "https://cp.cloudflare.com/generate_204",
       "interval": 300,
       "tolerance": 100

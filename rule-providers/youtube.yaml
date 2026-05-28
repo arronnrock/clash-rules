@@ -1,4 +1,7 @@
 payload:
   - youtube.com
+  - youtu.be
+  - youtube-nocookie.com
+  - youtubei.googleapis.com
   - ytimg.com
   - googlevideo.com

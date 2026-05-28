@@ -4,3 +4,5 @@ payload:
   - proactivebackend-pa.googleapis.com
   - generativelanguage.googleapis.com
   - ai.google.dev
+  - aistudio.google.com
+  - notebooklm.google.com

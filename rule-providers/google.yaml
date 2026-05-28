@@ -1,5 +1,7 @@
 payload:
   - google.com
+  - google.com.hk
+  - google.com.tw
   - gstatic.com
   - googleapis.com
   - googleusercontent.com

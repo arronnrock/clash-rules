@@ -15,19 +15,29 @@
     "fallback-filter": {
       "geoip": true,
       "geoip-code": "CN"
+    },
+    "nameserver-policy": {
+      "e.szridge.com": [
+        "10.0.0.1",
+        "10.0.0.200"
+      ],
+      "*.szridge.com": [
+        "10.0.0.1",
+        "10.0.0.200"
+      ]
     }
   },
   "proxy-groups": [
     {
-      "name": "NETWORK",
+      "name": "PROXY",
       "type": "select",
       "proxies": [
         "HK",
-        "DIRECT",
         "SG",
         "TW",
         "JP",
-        "US"
+        "US",
+        "DIRECT"
       ]
     },
     {
@@ -156,6 +166,8 @@
     }
   },
   "rules": [
+    "DOMAIN,e.szridge.com,DIRECT",
+    "DOMAIN-SUFFIX,szridge.com,DIRECT",
     "IP-CIDR,10.0.0.0/8,DIRECT,no-resolve",
     "IP-CIDR,172.16.0.0/12,DIRECT,no-resolve",
     "IP-CIDR,192.168.0.0/16,DIRECT,no-resolve",
@@ -169,26 +181,26 @@
     "DOMAIN-SUFFIX,cdn.openai.com,US",
     "DOMAIN-SUFFIX,files.openai.com,US",
     "RULE-SET,openai,US",
-    "RULE-SET,apple_media,NETWORK",
-    "DOMAIN-SUFFIX,connectivitycheck.gstatic.com,NETWORK",
-    "DOMAIN-SUFFIX,gstatic.com,NETWORK",
-    "DOMAIN-SUFFIX,googleapis.com,NETWORK",
-    "DOMAIN-SUFFIX,gemini.google.com,NETWORK",
-    "DOMAIN-SUFFIX,bard.google.com,NETWORK",
-    "DOMAIN-SUFFIX,generativelanguage.googleapis.com,NETWORK",
-    "DOMAIN-SUFFIX,proactivebackend-pa.googleapis.com,NETWORK",
-    "DOMAIN-SUFFIX,ai.google.dev,NETWORK",
-    "RULE-SET,gemini,NETWORK",
-    "RULE-SET,google,NETWORK",
-    "DOMAIN-SUFFIX,api.telegram.org,NETWORK",
-    "IP-CIDR,91.108.0.0/16,NETWORK,no-resolve",
-    "IP-CIDR,149.154.160.0/20,NETWORK,no-resolve",
-    "RULE-SET,telegram,NETWORK",
-    "RULE-SET,whatsapp,NETWORK",
-    "RULE-SET,youtube,NETWORK",
+    "RULE-SET,apple_media,PROXY",
+    "DOMAIN-SUFFIX,connectivitycheck.gstatic.com,PROXY",
+    "DOMAIN-SUFFIX,gstatic.com,PROXY",
+    "DOMAIN-SUFFIX,googleapis.com,PROXY",
+    "DOMAIN-SUFFIX,gemini.google.com,PROXY",
+    "DOMAIN-SUFFIX,bard.google.com,PROXY",
+    "DOMAIN-SUFFIX,generativelanguage.googleapis.com,PROXY",
+    "DOMAIN-SUFFIX,proactivebackend-pa.googleapis.com,PROXY",
+    "DOMAIN-SUFFIX,ai.google.dev,PROXY",
+    "RULE-SET,gemini,PROXY",
+    "RULE-SET,google,PROXY",
+    "DOMAIN-SUFFIX,api.telegram.org,PROXY",
+    "IP-CIDR,91.108.0.0/16,PROXY,no-resolve",
+    "IP-CIDR,149.154.160.0/20,PROXY,no-resolve",
+    "RULE-SET,telegram,PROXY",
+    "RULE-SET,whatsapp,PROXY",
+    "RULE-SET,youtube,PROXY",
     "RULE-SET,paypal,US",
-    "RULE-SET,nsfw,NETWORK",
+    "RULE-SET,nsfw,PROXY",
     "GEOIP,CN,DIRECT",
-    "MATCH,NETWORK"
+    "MATCH,PROXY"
   ]
 }

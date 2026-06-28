@@ -13,16 +13,6 @@
     "fallback-filter": {
       "geoip": true,
       "geoip-code": "CN"
-    },
-    "nameserver-policy": {
-      "e.szridge.com": [
-        "10.0.0.1",
-        "10.0.0.200"
-      ],
-      "*.szridge.com": [
-        "10.0.0.1",
-        "10.0.0.200"
-      ]
     }
   },
   "proxy-groups": [

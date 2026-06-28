@@ -26,11 +26,7 @@
         "TW",
         "JP",
         "US"
-      ],
-      "ssid-policy": {
-        "cellular": "HK",
-        "default": "HK"
-      }
+      ]
     },
     {
       "name": "US",

@@ -38,7 +38,7 @@
         "US"
       ],
       "ssid-policy": {
-        "cellular": "DIRECT",
+        "cellular": "HK",
         "default": "HK"
       }
     },
@@ -235,6 +235,9 @@
     "DOMAIN-SUFFIX,toutiao.com,DIRECT",
     "DOMAIN-SUFFIX,xiaohongshu.com,DIRECT",
     "DOMAIN-SUFFIX,smzdm.com,DIRECT",
+    "DOMAIN-SUFFIX,cn,DIRECT",
+    "GEOSITE,private,DIRECT",
+    "GEOSITE,cn,DIRECT",
     "RULE-SET,apple_ai,US",
     "DOMAIN-SUFFIX,chatgpt.com,US",
     "DOMAIN-SUFFIX,ws.chatgpt.com,US",

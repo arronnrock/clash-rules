@@ -39,7 +39,8 @@
         "SG",
         "TW",
         "JP",
-        "US"
+        "US",
+        "OTHER"
       ],
       "ssid-policy": {
         "cellular": "DIRECT",
@@ -63,6 +64,7 @@
       "type": "url-test",
       "include-all": true,
       "filter": "(?i)(\\bHK\\b|Hong\\s*Kong|香港|HK\\d+)",
+      "exclude-filter": "(?i)(泰国|Thailand|越南|Vietnam|尼日利亚|Nigeria|韩国|(?:South\\s*)?Korea|朝鲜|North\\s*Korea|印度|India|印度尼西亚|Indonesia|马来西亚|Malaysia|菲律宾|Philippines|柬埔寨|Cambodia|老挝|Laos|缅甸|Myanmar|蒙古|Mongolia|俄罗斯|Russia|英国|United\\s*Kingdom|\\bUK\\b|德国|Germany|法国|France|荷兰|Netherlands|加拿大|Canada|澳大利亚|Australia|新西兰|New\\s*Zealand|巴西|Brazil|墨西哥|Mexico|阿联酋|UAE|Dubai|土耳其|Turkey|以色列|Israel|南非|South\\s*Africa)",
       "url": "https://cp.cloudflare.com/generate_204",
       "interval": 600,
       "tolerance": 100,
@@ -87,6 +89,12 @@
       "interval": 600,
       "tolerance": 100,
       "lazy": true
+    },
+    {
+      "name": "OTHER",
+      "type": "select",
+      "include-all": true,
+      "filter": "(?i)(泰国|Thailand|越南|Vietnam|尼日利亚|Nigeria|韩国|(?:South\\s*)?Korea|朝鲜|North\\s*Korea|印度|India|印度尼西亚|Indonesia|马来西亚|Malaysia|菲律宾|Philippines|柬埔寨|Cambodia|老挝|Laos|缅甸|Myanmar|蒙古|Mongolia|俄罗斯|Russia|英国|United\\s*Kingdom|\\bUK\\b|德国|Germany|法国|France|荷兰|Netherlands|加拿大|Canada|澳大利亚|Australia|新西兰|New\\s*Zealand|巴西|Brazil|墨西哥|Mexico|阿联酋|UAE|Dubai|土耳其|Turkey|以色列|Israel|南非|South\\s*Africa)"
     }
   ],
   "rule-providers": {

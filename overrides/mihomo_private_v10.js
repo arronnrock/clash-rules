@@ -24,6 +24,18 @@
       "*.szridge.com": [
         "10.0.0.1",
         "10.0.0.200"
+      ],
+      "+.xiaohongshu.com": [
+        "223.5.5.5",
+        "119.29.29.29"
+      ],
+      "+.xhscdn.com": [
+        "223.5.5.5",
+        "119.29.29.29"
+      ],
+      "+.xhslink.com": [
+        "223.5.5.5",
+        "119.29.29.29"
       ]
     }
   },
@@ -232,6 +244,10 @@
     "DOMAIN-SUFFIX,snssdk.com,DIRECT",
     "DOMAIN-SUFFIX,toutiao.com,DIRECT",
     "DOMAIN-SUFFIX,xiaohongshu.com,DIRECT",
+    "DOMAIN-SUFFIX,xhscdn.com,DIRECT",
+    "DOMAIN-SUFFIX,xhslink.com,DIRECT",
+    "DOMAIN-KEYWORD,xiaohongshu,DIRECT",
+    "DOMAIN-KEYWORD,xhscdn,DIRECT",
     "DOMAIN-SUFFIX,smzdm.com,DIRECT",
     "DOMAIN-SUFFIX,cn,DIRECT",
     "GEOSITE,private,DIRECT",

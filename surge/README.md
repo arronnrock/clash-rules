@@ -70,8 +70,8 @@ global IPv6 change is enabled.
 4. Push the source and generated file together.
 5. Update the private Sub-Store output and complete the test checklist.
 
-GitHub Actions repeats the build and fails if the generated distribution is
-stale or violates the routing invariants.
+The build script validates the routing invariants before updating `dist`.
+GitHub Actions and the GitHub `workflow` permission are not required.
 
 ## Security
 

@@ -21,6 +21,19 @@ Default: https://raw.githubusercontent.com/arronnrock/clash-rules/main/dist/surg
 Global: https://raw.githubusercontent.com/arronnrock/clash-rules/main/dist/surge/surge_private_global_v1.conf
 ```
 
+Portable Sub-Store File definitions:
+
+```text
+Default: https://raw.githubusercontent.com/arronnrock/clash-rules/main/dist/surge/substore_surge_private_v1.json
+Global: https://raw.githubusercontent.com/arronnrock/clash-rules/main/dist/surge/substore_surge_private_global_v1.json
+```
+
+Each JSON file is a credential-free export that can be imported into
+Sub-Store. Its File Script fetches the existing `private` collection as Surge
+policies, replaces the marker inside `[Proxy]`, and sets a 24-hour profile
+update interval. The script source is maintained in
+`surge/substore/inject-private-proxies.js`.
+
 Rule Raw base URL:
 
 ```text
@@ -76,8 +89,10 @@ global IPv6 change is enabled.
 1. Edit the files under `surge/`.
 2. Run `node surge/scripts/build.mjs`.
 3. Review the generated A and B profiles under `dist/surge/`.
-4. Push the source and generated file together.
-5. Update the private Sub-Store output and complete the test checklist.
+4. Review the generated Sub-Store File definitions under `dist/surge/`.
+5. Push the source and generated files together.
+6. Import or update the private Sub-Store files and complete the test
+   checklist.
 
 The build script validates the routing invariants before updating `dist`.
 GitHub Actions and the GitHub `workflow` permission are not required.

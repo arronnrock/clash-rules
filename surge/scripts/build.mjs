@@ -9,6 +9,10 @@ const sourceProfilePaths = {
   private: path.join(rootDir, "surge/surge_private_v1.conf"),
   global: path.join(rootDir, "surge/surge_private_global_v1.conf"),
 };
+const subStoreScriptPath = path.join(
+  rootDir,
+  "surge/substore/inject-private-proxies.js",
+);
 
 const listPaths = {
   openai: path.join(rootDir, "surge/rules/openai.list"),
@@ -81,6 +85,46 @@ function requireBefore(ruleLines, earlierFragment, laterFragment) {
   assert(earlier >= 0, `Missing rule containing: ${earlierFragment}`);
   assert(later >= 0, `Missing rule containing: ${laterFragment}`);
   assert(earlier < later, `${earlierFragment} must appear before ${laterFragment}`);
+}
+
+async function validateSubStoreInjection(profileName, profile, script) {
+  const marker =
+    "# Proxy policies are injected by the private Sub-Store Surge output.";
+  const sampleNodes = [
+    "Sub-Store US sample = direct",
+    "Sub-Store HK sample = direct",
+  ].join("\n");
+  const options = {};
+  const produceArtifact = async (request) => {
+    assert(
+      request?.type === "collection" &&
+        request?.name === "private" &&
+        request?.platform === "Surge",
+      "Sub-Store injection must produce the private collection for Surge",
+    );
+    return sampleNodes;
+  };
+  const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
+  const run = new AsyncFunction(
+    "$content",
+    "$options",
+    "produceArtifact",
+    `${script}\nreturn { $content, $options };`,
+  );
+  const result = await run(profile, options, produceArtifact);
+
+  assert(
+    !result.$content.includes(marker),
+    `${profileName} retained the Sub-Store proxy marker`,
+  );
+  assert(
+    result.$content.includes(`[Proxy]\n${sampleNodes}\n\n[Proxy Group]`),
+    `${profileName} did not inject proxy policies into [Proxy]`,
+  );
+  assert(
+    result.$options?._res?.headers?.["profile-update-interval"] === 24,
+    `${profileName} did not set the 24-hour profile update interval`,
+  );
 }
 
 const lists = Object.fromEntries(
@@ -274,10 +318,18 @@ const profiles = Object.fromEntries(
     readText(filePath),
   ]),
 );
+const subStoreScript = readText(subStoreScriptPath).trim();
 const groupCounts = {
   private: validateProfile("private v1", profiles.private, false),
   global: validateProfile("private global v1", profiles.global, true),
 };
+
+await validateSubStoreInjection("Private v1", profiles.private, subStoreScript);
+await validateSubStoreInjection(
+  "Private global v1",
+  profiles.global,
+  subStoreScript,
+);
 
 assert(
   profiles.private === profiles.global.replace(`${wifiCatchAllRule}\n`, ""),
@@ -295,6 +347,60 @@ for (const [fileName, profile] of Object.entries(outputProfiles)) {
   console.log(`Built ${path.relative(rootDir, outputPath)}`);
 }
 
+const subStoreFiles = {
+  "substore_surge_private_v1.json": {
+    name: "surge_private_v1",
+    displayName: "Surge Private v1",
+    remark: "iPhone Surge direct-priority profile",
+    type: "file",
+    source: "remote",
+    url: "https://raw.githubusercontent.com/arronnrock/clash-rules/main/dist/surge/surge_private_v1.conf",
+    mergeSources: "",
+    ignoreFailedRemoteFile: "disabled",
+    download: false,
+    process: [
+      {
+        id: "surge-private-node-injection",
+        customName: "Inject private Surge proxies",
+        type: "Script Operator",
+        args: {
+          mode: "script",
+          content: subStoreScript,
+        },
+        disabled: false,
+      },
+    ],
+  },
+  "substore_surge_private_global_v1.json": {
+    name: "surge_private_global_v1",
+    displayName: "Surge Private Global v1",
+    remark: "iPhone Surge Wi-Fi foreign-priority profile",
+    type: "file",
+    source: "remote",
+    url: "https://raw.githubusercontent.com/arronnrock/clash-rules/main/dist/surge/surge_private_global_v1.conf",
+    mergeSources: "",
+    ignoreFailedRemoteFile: "disabled",
+    download: false,
+    process: [
+      {
+        id: "surge-private-node-injection",
+        customName: "Inject private Surge proxies",
+        type: "Script Operator",
+        args: {
+          mode: "script",
+          content: subStoreScript,
+        },
+        disabled: false,
+      },
+    ],
+  },
+};
+for (const [fileName, file] of Object.entries(subStoreFiles)) {
+  const outputPath = path.join(outputDir, fileName);
+  fs.writeFileSync(outputPath, `${JSON.stringify(file, null, 2)}\n`);
+  console.log(`Built ${path.relative(rootDir, outputPath)}`);
+}
+
 const totalRules = Object.values(lists).reduce((sum, rules) => sum + rules.length, 0);
 console.log(
   `Validated ${
@@ -302,4 +408,5 @@ console.log(
   } proxy groups and ${totalRules} shared external rules`,
 );
 console.log(`Validated ${representativeNodes.length} representative node names`);
+console.log("Validated Sub-Store private collection injection for both profiles");
 console.log("Profile invariant: global differs only by its Wi-Fi GLOBAL-PROXY fallback");

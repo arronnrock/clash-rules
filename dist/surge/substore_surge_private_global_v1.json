@@ -1,0 +1,23 @@
+{
+  "name": "surge_private_global_v1",
+  "displayName": "Surge Private Global v1",
+  "remark": "iPhone Surge Wi-Fi foreign-priority profile",
+  "type": "file",
+  "source": "remote",
+  "url": "https://raw.githubusercontent.com/arronnrock/clash-rules/main/dist/surge/surge_private_global_v1.conf",
+  "mergeSources": "",
+  "ignoreFailedRemoteFile": "disabled",
+  "download": false,
+  "process": [
+    {
+      "id": "surge-private-node-injection",
+      "customName": "Inject private Surge proxies",
+      "type": "Script Operator",
+      "args": {
+        "mode": "script",
+        "content": "const marker =\n  \"# Proxy policies are injected by the private Sub-Store Surge output.\";\nconst nodes = await produceArtifact({\n  type: \"collection\",\n  name: \"private\",\n  platform: \"Surge\",\n});\n\nif (!$content.includes(marker)) {\n  throw new Error(\"Surge proxy marker not found\");\n}\n\n$content = $content.replace(marker, String(nodes).trim());\n\nif ($options) {\n  $options._res = {\n    headers: {\n      \"profile-update-interval\": 24,\n    },\n  };\n}"
+      },
+      "disabled": false
+    }
+  ]
+}

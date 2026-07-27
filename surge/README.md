@@ -14,11 +14,15 @@ configuration. It is independent from the existing Stash and Mihomo overrides.
 - The GitHub Raw profile is a template. Do not import it directly before
   Sub-Store has injected proxy policies.
 
-Template Raw URL:
+Sub-Store template Raw URLs:
 
 ```text
-https://raw.githubusercontent.com/arronnrock/clash-rules/main/dist/surge/iphone_personal.conf
+A: https://raw.githubusercontent.com/arronnrock/clash-rules/main/dist/surge/iphone_personal_a.conf
+B: https://raw.githubusercontent.com/arronnrock/clash-rules/main/dist/surge/iphone_personal_b.conf
 ```
+
+`iphone_personal.conf` remains an alias of A for compatibility with the original
+URL.
 
 Rule Raw base URL:
 
@@ -28,18 +32,25 @@ https://raw.githubusercontent.com/arronnrock/clash-rules/main/surge/rules/
 
 ## Routing
 
-Rules are evaluated from top to bottom:
+Both profiles evaluate these rules from top to bottom:
 
 1. LAN traffic is direct.
 2. OpenAI/ChatGPT and PayPal use `US`.
 3. Remaining cellular traffic is direct.
 4. WeChat, domestic services and China IPs are direct.
 5. Explicit foreign services use `GLOBAL-PROXY`.
-6. Unknown traffic is direct.
 
-This means YouTube uses CMHK direct on cellular, but uses `GLOBAL-PROXY` on
-Wi-Fi. `GLOBAL-PROXY` defaults to `HK` and can be changed to `JP`, `SG`, `TW`,
-`US` or `OTHER` without affecting OpenAI, PayPal or domestic services.
+Profile A then sends unknown traffic to `DIRECT`. It is the normal,
+direct-priority profile.
+
+Profile B adds one Wi-Fi-only fallback after the domestic and foreign rules:
+remaining Wi-Fi traffic uses `GLOBAL-PROXY`. It is a temporary foreign-priority
+profile for inaccessible foreign services and controlled A/B testing. Unknown
+domestic domains may be proxied in B, so B is not the default profile.
+
+YouTube uses CMHK direct on cellular in both profiles, but uses
+`GLOBAL-PROXY` on Wi-Fi. `GLOBAL-PROXY` defaults to `HK` and can be changed to
+`JP`, `SG`, `TW`, `US` or `OTHER` without affecting OpenAI or PayPal.
 
 ## Node Groups
 
@@ -66,7 +77,7 @@ global IPv6 change is enabled.
 
 1. Edit the files under `surge/`.
 2. Run `node surge/scripts/build.mjs`.
-3. Review the generated `dist/surge/iphone_personal.conf`.
+3. Review the generated A and B profiles under `dist/surge/`.
 4. Push the source and generated file together.
 5. Update the private Sub-Store output and complete the test checklist.
 

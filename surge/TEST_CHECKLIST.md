@@ -21,7 +21,7 @@ Record the matched rule, final policy and node for every failed test.
 
 Expected result: only OpenAI/ChatGPT and PayPal use a proxy.
 
-## Wi-Fi: Profile A
+## Wi-Fi: surge_private_v1
 
 - [ ] ChatGPT login, conversation and upload use `US`.
 - [ ] PayPal uses `US`.
@@ -36,34 +36,37 @@ Expected result: only OpenAI/ChatGPT and PayPal use a proxy.
 - [ ] Changing `GLOBAL-PROXY` does not affect ChatGPT or PayPal.
 - [ ] Changing `GLOBAL-PROXY` does not affect domestic services.
 
-## Wi-Fi: Profile B
+## Wi-Fi: surge_private_global_v1
 
 - [ ] ChatGPT and PayPal still use `US`.
 - [ ] WeChat and Xiaohongshu still use `DIRECT`.
 - [ ] Known domestic domains and China IPs still use `DIRECT`.
 - [ ] Explicit foreign services use `GLOBAL-PROXY`.
 - [ ] A foreign domain missing from `foreign-proxy.list` uses `GLOBAL-PROXY`.
-- [ ] Switching back to A makes that same unclassified domain use `DIRECT`.
-- [ ] Cellular behavior remains identical to A.
+- [ ] Switching back to `surge_private_v1` makes that same unclassified domain
+      use `DIRECT`.
+- [ ] Cellular behavior remains identical in both profiles.
 
 ## A/B Test
 
 - [ ] Use the same Wi-Fi, device, target service and `GLOBAL-PROXY` selection.
 - [ ] Force-close the target app after every profile switch to avoid reusing a
       connection opened by the previous profile.
-- [ ] Randomize the order as A-B or B-A, then repeat in the reverse order.
+- [ ] Assign neutral A/B labels to the two profiles and randomize the order,
+      then repeat in the reverse order.
 - [ ] Record only profile label, load success, elapsed time, matched rule and
       final policy before comparing which profile is which.
-- [ ] Use B as a temporary fallback rather than the default when it fixes an
-      otherwise inaccessible foreign service.
+- [ ] Use `surge_private_global_v1` as a temporary fallback rather than the
+      default when it fixes an otherwise inaccessible foreign service.
 
 ## Regression Signals
 
 - [ ] No domestic request falls through to `foreign-proxy.list`.
 - [ ] No WeChat request uses `GLOBAL-PROXY`.
 - [ ] No Xiaohongshu request uses `GLOBAL-PROXY`.
-- [ ] A contains no Wi-Fi catch-all rule.
-- [ ] B contains exactly one Wi-Fi catch-all rule after domestic rules.
+- [ ] `surge_private_v1` contains no Wi-Fi catch-all rule.
+- [ ] `surge_private_global_v1` contains exactly one Wi-Fi catch-all rule after
+      domestic rules.
 - [ ] No regional group contains `DIRECT`.
 - [ ] `c87s5` appears in no regional group.
 - [ ] There are no empty US, HK, JP, SG, TW or OTHER groups after Sub-Store

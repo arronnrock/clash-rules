@@ -6,8 +6,8 @@ const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(scriptDir, "../..");
 const outputDir = path.join(rootDir, "dist/surge");
 const sourceProfilePaths = {
-  A: path.join(rootDir, "surge/iphone_personal.conf"),
-  B: path.join(rootDir, "surge/iphone_personal_b.conf"),
+  private: path.join(rootDir, "surge/surge_private_v1.conf"),
+  global: path.join(rootDir, "surge/surge_private_global_v1.conf"),
 };
 
 const listPaths = {
@@ -275,20 +275,19 @@ const profiles = Object.fromEntries(
   ]),
 );
 const groupCounts = {
-  A: validateProfile("A", profiles.A, false),
-  B: validateProfile("B", profiles.B, true),
+  private: validateProfile("private v1", profiles.private, false),
+  global: validateProfile("private global v1", profiles.global, true),
 };
 
 assert(
-  profiles.A === profiles.B.replace(`${wifiCatchAllRule}\n`, ""),
-  "Profiles A and B must differ only by the Wi-Fi proxy fallback",
+  profiles.private === profiles.global.replace(`${wifiCatchAllRule}\n`, ""),
+  "Private and private global profiles must differ only by the Wi-Fi proxy fallback",
 );
 
 fs.mkdirSync(outputDir, { recursive: true });
 const outputProfiles = {
-  "iphone_personal.conf": profiles.A,
-  "iphone_personal_a.conf": profiles.A,
-  "iphone_personal_b.conf": profiles.B,
+  "surge_private_v1.conf": profiles.private,
+  "surge_private_global_v1.conf": profiles.global,
 };
 for (const [fileName, profile] of Object.entries(outputProfiles)) {
   const outputPath = path.join(outputDir, fileName);
@@ -298,7 +297,9 @@ for (const [fileName, profile] of Object.entries(outputProfiles)) {
 
 const totalRules = Object.values(lists).reduce((sum, rules) => sum + rules.length, 0);
 console.log(
-  `Validated ${groupCounts.A + groupCounts.B} proxy groups and ${totalRules} shared external rules`,
+  `Validated ${
+    groupCounts.private + groupCounts.global
+  } proxy groups and ${totalRules} shared external rules`,
 );
 console.log(`Validated ${representativeNodes.length} representative node names`);
-console.log("A/B invariant: profiles differ only by B's Wi-Fi GLOBAL-PROXY fallback");
+console.log("Profile invariant: global differs only by its Wi-Fi GLOBAL-PROXY fallback");

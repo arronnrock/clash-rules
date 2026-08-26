@@ -172,6 +172,7 @@ surge/
 │   ├── audit-private-nodes.mjs
 │   ├── network-region.js
 │   ├── render-private-profile.mjs
+│   ├── update-active-profile.mjs
 │   └── validate-v2.mjs
 └── README.md
 ```
@@ -242,6 +243,21 @@ chmod 600 .private/surge-v2-private.conf
 
 The rendered file contains live proxy credentials. Never attach it to an
 issue, copy it into `surge/`, or override the `.private/` Git ignore rule.
+
+### Surge Mac automatic node refresh
+
+Surge Mac normalizes an imported local profile and may add device-local
+settings. Do not periodically overwrite that active profile with the public
+template. Instead, stream the current `private` collection through
+`scripts/update-active-profile.mjs`; it replaces only the active profile's
+`[Proxy]` section and preserves every other section and local setting.
+
+The updater must write to a temporary file, run `surge-cli --check`, and replace
+the active profile atomically only after validation succeeds. A failed SSH
+connection, missing region, duplicate name, malformed node or Surge syntax
+error must leave the current profile untouched. After replacement, run
+`surge-cli reload`; if Surge is not running, the updated profile will be used
+at its next start.
 
 ### Mac mini subscription gateway
 

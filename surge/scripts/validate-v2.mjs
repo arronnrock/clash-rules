@@ -128,6 +128,9 @@ for (const fragment of [
   "/ai-stable.list,AI-REGION",
   "/paypal-us.list,US-AUTO",
   "TYPE:CELLULAR,DIRECT",
+  "DOMAIN-SUFFIX,iotaskyt.com,WIFI",
+  "DOMAIN-SUFFIX,tigerfintech.com,WIFI",
+  "DOMAIN-SUFFIX,skytigris.cn,WIFI",
   "PROCESS-NAME,Tiger Trade,WIFI #!MACOS-ONLY",
   "/securities-wifi.list,WIFI",
   "/wechat-direct-v2.list,DIRECT",
@@ -141,6 +144,8 @@ for (const fragment of [
 }
 assert(index("/ai-stable.list,AI-REGION") < index("TYPE:CELLULAR,DIRECT"));
 assert(index("/paypal-us.list,US-AUTO") < index("TYPE:CELLULAR,DIRECT"));
+assert(index("TYPE:CELLULAR,DIRECT") < index("DOMAIN-SUFFIX,iotaskyt.com,WIFI"));
+assert(index("DOMAIN-SUFFIX,skytigris.cn,WIFI") < index("GEOIP,CN,DIRECT"));
 assert(index("TYPE:CELLULAR,DIRECT") < index("/securities-wifi.list,WIFI"));
 assert(index("PROCESS-NAME,Tiger Trade,WIFI") < index("/securities-wifi.list,WIFI"));
 assert(index("/securities-wifi.list,WIFI") < index("/wechat-direct-v2.list,DIRECT"));

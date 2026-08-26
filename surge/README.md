@@ -341,10 +341,11 @@ overseas countries are classified separately in the script and Logbook, even
 though both currently choose `DIRECT`. This leaves room for a later policy
 difference without disturbing the critical AI/PayPal rules.
 
-On Mac, Tiger Trade also has a process rule targeting `WIFI`. This catches new
-or rotating Tiger endpoints before they can fall through to `GEOIP,CN`. The
-shared securities list retains the observed Tiger domains for iOS and other
-clients, including `iotaskyt.com`, `tigerfintech.com`, and `skytigris.cn`.
+The three observed Tiger endpoint suffixes (`iotaskyt.com`, `tigerfintech.com`,
+and `skytigris.cn`) are also inline in the main profile so a stale remote-rule
+cache cannot send them to `GEOIP,CN`. On Mac, Tiger Trade additionally has a
+process rule targeting `WIFI`, which catches new or rotating Tiger endpoints.
+The shared securities list retains the same domains for other clients.
 
 ### Mac and Android consistency
 

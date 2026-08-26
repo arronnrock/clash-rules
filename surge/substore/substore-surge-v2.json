@@ -1,0 +1,23 @@
+{
+  "name": "surge_v2",
+  "displayName": "Surge Mac iOS v2",
+  "remark": "Shared Surge profile with private collection node injection",
+  "type": "file",
+  "source": "remote",
+  "url": "https://raw.githubusercontent.com/arronnrock/clash-rules/main/surge/surge.conf",
+  "mergeSources": "",
+  "ignoreFailedRemoteFile": "disabled",
+  "download": false,
+  "process": [
+    {
+      "id": "surge-v2-private-node-injection",
+      "customName": "Inject private Surge proxies v2",
+      "type": "Script Operator",
+      "args": {
+        "mode": "script",
+        "content": "const marker = \"# Sub-Store injects the private Surge proxy list here.\";\nconst collection = \"private\";\n\nconst regionPatterns = {\n  US: /(\\bUS\\b|USA|United\\s*States|美国|美國|🇺🇸|洛杉矶|洛杉磯|圣何塞|聖何塞|西雅图|西雅圖|达拉斯|達拉斯|纽约|紐約|Los\\s*Angeles|San\\s*Jose|Seattle|Dallas|New\\s*York|c87s[123]\\b|US\\d+)/i,\n  HK: /(\\bHK\\b|Hong\\s*Kong|香港|🇭🇰|HKBN|HK\\d+)/i,\n  JP: /(\\bJP\\b|Japan|日本|🇯🇵|东京|東京|大阪|埼玉|樱花|櫻花|biglobe|c87s4\\b|JP\\d+)/i,\n  SG: /(\\bSG\\b|Singapore|新加坡|狮城|獅城|🇸🇬|SG\\d+)/i,\n};\n\nconst informationNodePatterns = [\n  /^🔄?\\s*建议.*更新订阅/i,\n  /^剩余流量/,\n  /^剩余/,\n  /^距离下次重置/,\n  /^套餐到期/,\n  /^苏菲家宽官网地址/,\n  /^官网地址防失联发布页/,\n  /^地址防失联发布页/,\n  /^联通移动用中转/,\n];\n\nconst nodes = await produceArtifact({\n  type: \"collection\",\n  name: collection,\n  platform: \"Surge\",\n});\n\nif (!$content.includes(marker)) {\n  throw new Error(\"Surge v2 proxy marker not found\");\n}\n\nconst proxyLines = String(nodes || \"\")\n  .split(/\\r?\\n/)\n  .map((line) => line.trim())\n  .filter(Boolean)\n  .map((line) => {\n    const separator = line.indexOf(\"=\");\n    if (separator <= 0) {\n      throw new Error(`Malformed Surge proxy line from ${collection}`);\n    }\n    return {\n      line,\n      name: line.slice(0, separator).trim(),\n    };\n  })\n  .filter(({ name }) => !informationNodePatterns.some((pattern) => pattern.test(name)));\n\nif (proxyLines.length === 0) {\n  throw new Error(`Sub-Store collection ${collection} produced no usable Surge nodes`);\n}\n\nconst names = proxyLines.map(({ name }) => name);\nif (new Set(names).size !== names.length) {\n  throw new Error(`Sub-Store collection ${collection} produced duplicate Surge node names`);\n}\n\nconst regionCounts = Object.fromEntries(\n  Object.entries(regionPatterns).map(([region, pattern]) => [\n    region,\n    names.filter((name) => pattern.test(name)).length,\n  ]),\n);\nconst missingRegions = Object.entries(regionCounts)\n  .filter(([, count]) => count === 0)\n  .map(([region]) => region);\n\nif (missingRegions.length > 0) {\n  throw new Error(\n    `Refusing to publish Surge v2: no nodes matched ${missingRegions.join(\", \")}`,\n  );\n}\n\nconsole.log(\n  `Surge v2 nodes: total=${proxyLines.length}, regions=${JSON.stringify(regionCounts)}`,\n);\n\n$content = $content.replace(\n  marker,\n  proxyLines.map(({ line }) => line).join(\"\\n\"),\n);\n\nif ($options) {\n  $options._res = {\n    headers: {\n      \"profile-update-interval\": 24,\n    },\n  };\n}"
+      },
+      "disabled": false
+    }
+  ]
+}

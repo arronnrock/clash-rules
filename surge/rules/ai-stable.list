@@ -1,0 +1,18 @@
+# OpenAI / ChatGPT and AI dependencies share one regional fallback policy.
+DOMAIN-SUFFIX,openai.com
+DOMAIN-SUFFIX,chatgpt.com
+DOMAIN-SUFFIX,oaistatic.com
+DOMAIN-SUFFIX,oaiusercontent.com
+DOMAIN-SUFFIX,auth0.com
+DOMAIN-SUFFIX,featuregates.org
+DOMAIN,ios.chat.openai.com
+DOMAIN,chat.openai.com
+DOMAIN,api.openai.com
+DOMAIN,auth.openai.com
+DOMAIN,platform.openai.com
+DOMAIN,gemini.google.com
+DOMAIN,bard.google.com
+DOMAIN,ai.google.dev
+DOMAIN,makersuite.google.com
+DOMAIN,mask.icloud.com
+DOMAIN,mask-h2.icloud.com

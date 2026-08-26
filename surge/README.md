@@ -341,6 +341,11 @@ overseas countries are classified separately in the script and Logbook, even
 though both currently choose `DIRECT`. This leaves room for a later policy
 difference without disturbing the critical AI/PayPal rules.
 
+On Mac, Tiger Trade also has a process rule targeting `WIFI`. This catches new
+or rotating Tiger endpoints before they can fall through to `GEOIP,CN`. The
+shared securities list retains the observed Tiger domains for iOS and other
+clients, including `iotaskyt.com`, `tigerfintech.com`, and `skytigris.cn`.
+
 ### Mac and Android consistency
 
 Mac uses this same profile and therefore the same destination policies. Android

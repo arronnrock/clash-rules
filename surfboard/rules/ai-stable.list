@@ -1,0 +1,19 @@
+# Supplemental OpenAI/AI dependencies. Critical OpenAI domains are also inline
+# in the profile so force-remote-dns and enhanced-mode can be applied.
+DOMAIN-SUFFIX,openai.com
+DOMAIN-SUFFIX,chatgpt.com
+DOMAIN-SUFFIX,oaistatic.com
+DOMAIN-SUFFIX,oaiusercontent.com
+DOMAIN-SUFFIX,oaistatsig.com
+DOMAIN-SUFFIX,chatgptusercontent.com
+DOMAIN-SUFFIX,auth0.com
+DOMAIN-SUFFIX,featuregates.org
+DOMAIN,android.chat.openai.com
+DOMAIN,chat.openai.com
+DOMAIN,api.openai.com
+DOMAIN,auth.openai.com
+DOMAIN,platform.openai.com
+DOMAIN,gemini.google.com
+DOMAIN,bard.google.com
+DOMAIN,ai.google.dev
+DOMAIN,makersuite.google.com

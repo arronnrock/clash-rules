@@ -1,0 +1,9 @@
+# PayPal and payment dependencies use the same stable US egress.
+DOMAIN-SUFFIX,paypal.com
+DOMAIN-SUFFIX,paypal.me
+DOMAIN-SUFFIX,paypalobjects.com
+DOMAIN-SUFFIX,paypal-mktg.com
+DOMAIN-SUFFIX,braintreegateway.com
+DOMAIN-SUFFIX,braintree-api.com
+DOMAIN-SUFFIX,braintreepayments.com
+DOMAIN-SUFFIX,paypalinc.com

@@ -1,0 +1,95 @@
+# Surfboard Android migration v1
+
+This directory is an Android-only Surfboard profile. It does not replace or
+modify the existing Mihomo, Stash or Surge configurations.
+
+## Requirements and operating model
+
+- Surfboard Android 2.34.2 or newer.
+- Keep Surfboard **Bypass Configuration empty**. Application routing is done by
+  `PROCESS-NAME` rules; excluding an app from the VPN prevents those rules from
+  seeing it.
+- Mainland cellular and unknown/mainland Wi-Fi use `PROXY` for non-mainland
+  traffic. On overseas Wi-Fi, manually select `WIFI = DIRECT`.
+- OpenAI always uses `AI-REGION` (US by default); PayPal always uses `US-AUTO`.
+  Those rules precede `WIFI`, so the overseas setting cannot move them direct.
+- Tiger, Futu and Longbridge use `ACCESS`: they are proxied on mainland
+  cellular/mainland Wi-Fi and become direct when `WIFI = DIRECT` overseas.
+
+Surfboard has a native subnet group but no equivalent of the Surge JavaScript
+that classifies Wi-Fi from a public-IP country lookup. Keeping unknown Wi-Fi on
+`PROXY` is the safe default.
+
+## ChatGPT TLS/SSL protections
+
+The profile disables IPv6, routes the entire official ChatGPT package through
+`AI-REGION`, forces remote DNS with enhanced mode, duplicates critical OpenAI
+domains inline for WebView/browser flows, and rejects QUIC only for ChatGPT so
+it falls back to TCP/TLS. It does not use MITM, install a certificate, disable
+application certificate checks, or pin changing OpenAI CDN addresses.
+
+Changing `AI-REGION` changes country intentionally. Automatic checks only move
+between nodes inside the selected country, preventing ordinary latency tests
+from moving an active login among US, JP and SG.
+
+## Nodes and private profile generation
+
+Airport nodes, server addresses and credentials are never committed. The
+Sub-Store script first requests collection `private` as `Surfboard`. The
+currently deployed producer emits only three Shadowsocks nodes and omits the
+Hysteria2 nodes, so the script falls back to Surge-compatible node lines after
+checking every protocol/parameter and requiring US, HK, JP and SG coverage.
+Surfboard 2.34.2+ accepts the resulting Hysteria2 syntax.
+
+Generate a private profile without writing credentials into the repository:
+
+```bash
+ssh SUBSTORE_VPS 'curl -fsS http://127.0.0.1:3000/download/collection/private/Surge' \
+  | node surfboard/scripts/render-private-profile.mjs \
+  > /a/private/location/surfboard-v1.conf
+```
+
+Run repository validation with:
+
+```bash
+node surfboard/scripts/build-artifact.mjs
+node surfboard/scripts/validate.mjs
+python3 -m py_compile surfboard/scripts/macmini/render_surfboard.py \
+  surfboard/scripts/macmini/serve_profiles.py
+```
+
+## Mac mini managed-profile gateway
+
+The existing Mac mini gateway remains on its current Funnel and port. Its HTTP
+server gains one additional exact route, `/surfboard-v1.conf`, protected by a
+separate random token. The existing `/surge-v2.conf` route and token remain
+unchanged.
+
+Every six hours, `refresh-surfboard.sh` fetches the public template and streams
+the private collection through the existing forced-command read-only SSH key.
+It validates protocols, Hysteria2 parameters, duplicate names and four-region
+coverage before atomically replacing the last-good profile. Failed fetches or
+validation never replace the served configuration.
+
+The server prepends this private first line at response time:
+
+```text
+#!MANAGED-CONFIG https://PRIVATE-HOST/surfboard-v1.conf?token=PRIVATE interval=21600 strict=false
+```
+
+Neither the host nor token is stored in GitHub. Do not expose the VPS frontend,
+backend or management API, and do not modify the Sub-Store database for this
+migration.
+
+## Rule precedence
+
+1. LAN, Tailscale and corporate routes: `DIRECT`.
+2. ChatGPT/OpenAI: `AI-REGION`; PayPal: `US-AUTO`.
+3. Tiger/Futu/Longbridge applications and domains: `ACCESS`.
+4. WeChat, Android compatibility and mainland China: `DIRECT`.
+5. Google Play, Telegram and other international services: `ACCESS`.
+6. `FINAL,ACCESS`.
+
+The historical WeChat image, Google Play, OEM connectivity, company DNS,
+Telegram DNS and mainland direct fixes are preserved in Surfboard-native rule
+files.

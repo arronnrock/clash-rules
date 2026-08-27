@@ -1,0 +1,13 @@
+# WeChat, WeCom and Tencent media. The IP range is the Stash v9 image fix.
+DOMAIN-SUFFIX,qq.com
+DOMAIN-SUFFIX,weixin.qq.com
+DOMAIN-SUFFIX,wechat.com
+DOMAIN-SUFFIX,wecom.work
+DOMAIN-SUFFIX,gtimg.com
+DOMAIN-SUFFIX,qpic.cn
+DOMAIN-SUFFIX,qlogo.cn
+DOMAIN-SUFFIX,tenpay.com
+DOMAIN-KEYWORD,weixin
+DOMAIN-KEYWORD,wechat
+DOMAIN-KEYWORD,wecom
+IP-CIDR,43.154.95.0/24

@@ -41,6 +41,14 @@ Hysteria2 nodes, so the script falls back to Surge-compatible node lines after
 checking every protocol/parameter and requiring US, HK, JP and SG coverage.
 Surfboard 2.34.2+ accepts the resulting Hysteria2 syntax.
 
+The served profile is self-contained: every public rule file in `rules/` is
+compiled inline into `surfboard.conf`. Surfboard therefore performs one managed
+profile request instead of fetching eight GitHub Raw resources during import.
+This avoids the client behavior where one external-resource timeout rejects the
+entire profile. The validator requires every rule-source entry to be present in
+the complete profile. Managed `*.ts.net` traffic follows `ACCESS`, so mainland
+cellular updates use the proxy after the initial import.
+
 Generate a private profile without writing credentials into the repository:
 
 ```bash

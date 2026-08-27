@@ -76,27 +76,39 @@ for (const [name, expected] of [
 const rules = activeLines(section("Rule"));
 const index = (fragment) => rules.findIndex((line) => line.includes(fragment));
 for (const fragment of [
-  "lan-corporate-direct.list,DIRECT",
+  "DOMAIN,e.szridge.com,DIRECT",
   "PROCESS-NAME,com.openai.chatgpt,AI-REGION,force-remote-dns,enhanced-mode",
   "PROCESS-NAME,com.paypal.android.p2pmobile,US-AUTO,force-remote-dns,enhanced-mode",
   "PROCESS-NAME,com.tigerbrokers.stock*,ACCESS",
   "PROCESS-NAME,cn.futu.trader.*,ACCESS",
   "PROCESS-NAME,global.longbridge.*.android,ACCESS",
-  "securities.list,ACCESS",
-  "wechat-direct.list,DIRECT",
-  "android-compat-direct.list,DIRECT",
-  "china-direct.list,DIRECT",
+  "DOMAIN-SUFFIX,itiger.com,ACCESS",
+  "DOMAIN-SUFFIX,qq.com,DIRECT",
+  "DOMAIN-SUFFIX,miui.com,DIRECT",
+  "DOMAIN-SUFFIX,alipay.com,DIRECT",
   "GEOIP,CN,DIRECT",
-  "international.list,ACCESS",
+  "DOMAIN-SUFFIX,ts.net,ACCESS",
+  "DOMAIN,play.googleapis.com,ACCESS",
 ]) assert(index(fragment) >= 0, `Missing rule ${fragment}`);
-assert.equal(rules[1], "AND,((PROCESS-NAME,com.openai.chatgpt),(PROTOCOL,QUIC)),REJECT");
+assert(index("PROTOCOL,QUIC" ) < index("com.openai.chatgpt,AI-REGION"));
 assert(index("com.openai.chatgpt,AI-REGION") < index("GEOIP,CN,DIRECT"));
 assert(index("com.paypal.android.p2pmobile,US-AUTO") < index("GEOIP,CN,DIRECT"));
-assert(index("com.tigerbrokers.stock*,ACCESS") < index("china-direct.list,DIRECT"));
+assert(index("com.tigerbrokers.stock*,ACCESS") < index("DOMAIN-SUFFIX,cn,DIRECT"));
 assert.equal(rules.at(-1), "FINAL,ACCESS");
 assert(!rules.some((line) => line.startsWith("SUBNET,TYPE:CELLULAR,DIRECT")));
+assert(!rules.some((line) => line.startsWith("RULE-SET,")), "Managed profile must be self-contained");
 
 const allowedTypes = new Set(["DOMAIN", "DOMAIN-SUFFIX", "DOMAIN-KEYWORD", "IP-CIDR", "IP-CIDR6"]);
+const listTargets = {
+  "lan-corporate-direct.list": "DIRECT",
+  "ai-stable.list": "AI-REGION",
+  "paypal-us.list": "US-AUTO",
+  "securities.list": "ACCESS",
+  "wechat-direct.list": "DIRECT",
+  "android-compat-direct.list": "DIRECT",
+  "china-direct.list": "DIRECT",
+  "international.list": "ACCESS",
+};
 for (const name of fs.readdirSync(path.join(root, "rules")).filter((name) => name.endsWith(".list"))) {
   const lines = activeLines(fs.readFileSync(path.join(root, "rules", name), "utf8"));
   assert(lines.length, `${name} is empty`);
@@ -104,6 +116,11 @@ for (const name of fs.readdirSync(path.join(root, "rules")).filter((name) => nam
     const fields = line.split(",");
     assert.equal(fields.length, 2, `${name} malformed: ${line}`);
     assert(allowedTypes.has(fields[0]), `${name} has unsupported rule: ${line}`);
+    const prefix = `${line},${listTargets[name]}`;
+    assert(
+      rules.some((rule) => rule === prefix || rule.startsWith(`${prefix},`)),
+      `${name} is not compiled into surfboard.conf: ${line}`,
+    );
   }
 }
 

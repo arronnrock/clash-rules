@@ -341,6 +341,11 @@ overseas countries are classified separately in the script and Logbook, even
 though both currently choose `DIRECT`. This leaves room for a later policy
 difference without disturbing the critical AI/PayPal rules.
 
+The Telegram Bot API uses two verified static IP mappings together with
+`use-local-host-item-for-proxy=true`. This prevents mainland DNS pollution from
+breaking OpenClaw/Telegram outbound delivery while retaining the normal
+Telegram hostname, TLS SNI, and proxy policy.
+
 The three observed Tiger endpoint suffixes (`iotaskyt.com`, `tigerfintech.com`,
 and `skytigris.cn`) are also inline in the main profile so a stale remote-rule
 cache cannot send them to `GEOIP,CN`. On Mac, Tiger Trade additionally has a

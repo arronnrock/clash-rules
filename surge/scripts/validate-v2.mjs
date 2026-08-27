@@ -43,6 +43,14 @@ for (const name of ["General", "Host", "Proxy", "Proxy Group", "Script", "Rule"]
   section(name);
 }
 
+assert(section("General").includes("use-local-host-item-for-proxy = true"));
+assert(
+  section("Host").includes(
+    "api.telegram.org = 149.154.166.110,149.154.167.220",
+  ),
+  "Telegram Bot API must retain its verified anti-pollution mapping",
+);
+
 assert.equal(activeLines(section("Proxy")).length, 0, "[Proxy] must not contain nodes");
 assert(profile.includes("# Sub-Store injects the private Surge proxy list here."));
 assert(!profile.includes("policy-path="), "Complete-profile injection must not retain policy-path");

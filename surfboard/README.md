@@ -73,11 +73,13 @@ server gains one additional exact route, `/surfboard-v1.conf`, protected by a
 separate random token. The existing `/surge-v2.conf` route and token remain
 unchanged.
 
-Every six hours, `refresh-surfboard.sh` fetches the public template and streams
-the private collection through the existing forced-command read-only SSH key.
-It validates protocols, Hysteria2 parameters, duplicate names and four-region
-coverage before atomically replacing the last-good profile. Failed fetches or
-validation never replace the served configuration.
+Every six hours, `refresh-surfboard.sh` reads the template from the explicitly
+deployed Git commit and streams the private collection through the existing
+forced-command read-only SSH key. It validates protocols, Hysteria2 parameters,
+duplicate names and four-region coverage before atomically replacing the
+last-good profile. A later GitHub push does not change production until its
+exact commit is deployed; failed collection fetches or validation never replace
+the served configuration.
 
 The server prepends this private first line at response time:
 

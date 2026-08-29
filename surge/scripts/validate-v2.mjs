@@ -282,9 +282,9 @@ await assert.rejects(
   ),
   /no nodes matched JP/,
 );
-assert(readme.includes("Tailscale Funnel HTTPS"));
-assert(readme.includes("VPS 127.0.0.1:3001"));
-assert(readme.includes("Port 3000 is the backend API"));
+assert(readme.includes("VPS HTTPS path with a private read-only token"));
+assert(readme.includes("profile rendered from a pinned Git commit"));
+assert(readme.includes("management ports on loopback"));
 assert(readme.includes("no bind mount or Docker volume"));
 
 async function exerciseRegionScript({ status = 200, data = "", error = null, initial = "PROXY" }) {

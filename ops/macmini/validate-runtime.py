@@ -15,7 +15,10 @@ REQUIRED = (
     "surfboard/scripts/macmini/refresh-surfboard.sh",
     "surfboard/scripts/macmini/serve_profiles.py",
     "ops/macmini/health-check.sh",
+    "ops/macmini/profile-tunnel.sh",
+    "ops/macmini/profile-tunnel.plist.template",
     "ops/macmini/update-runtime.sh",
+    "ops/vps/render-profile-nginx.py",
 )
 SYNTHETIC_NODES = """美国 US1 = hysteria2, 192.0.2.1, 443, password=test, sni=example.com, skip-cert-verify=true
 香港 HK1 = hysteria2, 192.0.2.2, 443, password=test, sni=example.com, skip-cert-verify=true
@@ -57,11 +60,13 @@ def main():
         root / "surfboard/scripts/macmini/render_surfboard.py",
         root / "surfboard/scripts/macmini/serve_profiles.py",
         root / "ops/macmini/validate-runtime.py",
+        root / "ops/vps/render-profile-nginx.py",
     ]
     shell_files = [
         root / "surge/scripts/macmini/refresh-surge.sh",
         root / "surfboard/scripts/macmini/refresh-surfboard.sh",
         root / "ops/macmini/health-check.sh",
+        root / "ops/macmini/profile-tunnel.sh",
         root / "ops/macmini/update-runtime.sh",
     ]
 
@@ -72,6 +77,7 @@ def main():
         run([sys.executable, "-m", "py_compile"] + [str(path) for path in python_files], env=env)
         for path in shell_files:
             run(["/bin/zsh", "-n", str(path)])
+        run(["/usr/bin/plutil", "-lint", str(root / "ops/macmini/profile-tunnel.plist.template")])
 
         nodes = temp / "nodes.conf"
         nodes.write_text(SYNTHETIC_NODES, encoding="utf-8")
@@ -96,6 +102,48 @@ def main():
                     fail("rendered profile lost required region " + region)
             if rendered.count("192.0.2.") != 4:
                 fail("renderer did not inject all synthetic nodes")
+
+        nginx_inputs = {}
+        for name, value in {
+            "host": "192.0.2.100\n",
+            "certificate": "placeholder\n",
+            "certificate-key": "placeholder\n",
+            "surge-token": "s" * 32 + "\n",
+            "surge-path": "a" * 64 + "\n",
+            "surfboard-token": "b" * 32 + "\n",
+            "surfboard-path": "c" * 64 + "\n",
+        }.items():
+            path = temp / name
+            path.write_text(value, encoding="utf-8")
+            nginx_inputs[name] = path
+        nginx_output = temp / "profile-gateway.nginx"
+        with nginx_output.open("w", encoding="utf-8") as handle:
+            run(
+                [
+                    sys.executable,
+                    str(root / "ops/vps/render-profile-nginx.py"),
+                    "--host-file", str(nginx_inputs["host"]),
+                    "--certificate", str(nginx_inputs["certificate"]),
+                    "--certificate-key", str(nginx_inputs["certificate-key"]),
+                    "--surge-token-file", str(nginx_inputs["surge-token"]),
+                    "--surge-path-token-file", str(nginx_inputs["surge-path"]),
+                    "--surfboard-token-file", str(nginx_inputs["surfboard-token"]),
+                    "--surfboard-path-token-file", str(nginx_inputs["surfboard-path"]),
+                ],
+                stdout=handle,
+            )
+        nginx = nginx_output.read_text(encoding="utf-8")
+        for required in (
+            "127.0.0.1:23132",
+            "/surge-v2/" + "a" * 64,
+            "/surfboard-v1/" + "c" * 64,
+            "/surge-v2.conf?token=" + "s" * 32,
+            "/surfboard-v1.conf?token=" + "b" * 32,
+        ):
+            if required not in nginx:
+                fail("Nginx renderer lost required route: " + required[:32])
+        if ".ts.net" in nginx:
+            fail("Nginx renderer retained a Funnel dependency")
 
     print("Mac mini runtime source validated")
 

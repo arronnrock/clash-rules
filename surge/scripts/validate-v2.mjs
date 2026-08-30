@@ -284,6 +284,8 @@ await assert.rejects(
 );
 assert(readme.includes("VPS HTTPS path with a private read-only token"));
 assert(readme.includes("profile rendered from a pinned Git commit"));
+assert(readme.includes("reverse-forward listen address"));
+assert(readme.includes("Tailscale Funnel is not a production"));
 assert(readme.includes("management ports on loopback"));
 assert(readme.includes("no bind mount or Docker volume"));
 

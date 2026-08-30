@@ -68,10 +68,10 @@ python3 -m py_compile surfboard/scripts/macmini/render_surfboard.py \
 
 ## Mac mini managed-profile gateway
 
-The existing Mac mini gateway remains on its current Funnel and port. Its HTTP
-server gains one additional exact route, `/surfboard-v1.conf`, protected by a
-separate random token. The existing `/surge-v2.conf` route and token remain
-unchanged.
+The Mac mini HTTP gateway stays bound to loopback. A dedicated, restricted
+reverse SSH tunnel exposes it only as a second loopback port on the VPS; Nginx
+serves the exact `/surfboard-v1/PRIVATE_PATH_TOKEN` route over HTTPS. Tailscale
+Funnel is not part of the production delivery path.
 
 Every six hours, `refresh-surfboard.sh` reads the template from the explicitly
 deployed Git commit and streams the private collection through the existing
@@ -84,7 +84,7 @@ the served configuration.
 The server prepends this private first line at response time:
 
 ```text
-#!MANAGED-CONFIG https://PRIVATE-HOST/surfboard-v1.conf?token=PRIVATE interval=21600 strict=false
+#!MANAGED-CONFIG https://PRIVATE-HOST/surfboard-v1/PRIVATE_PATH_TOKEN interval=21600 strict=false
 ```
 
 Neither the host nor token is stored in GitHub. Do not expose the VPS frontend,

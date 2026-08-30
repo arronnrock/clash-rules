@@ -29,6 +29,9 @@ for label in \
   com.arronnrock.surfboard-profile-refresh; do
   /bin/launchctl print "gui/$uid/$label" >/dev/null
 done
+if [[ -s "$base/profile-tunnel-target" ]]; then
+  /bin/launchctl print "gui/$uid/com.arronnrock.profile-gateway-tunnel" >/dev/null
+fi
 /usr/sbin/lsof -nP -iTCP:13002 -sTCP:LISTEN >/dev/null
 
 fetch_local_profile() {
@@ -59,12 +62,17 @@ surfboard_count="$(count_proxies "$temp_dir/surfboard.conf")"
 (( surge_count >= 4 )) || { print -u2 "Surge profile has too few proxies"; exit 1; }
 (( surfboard_count >= 4 )) || { print -u2 "Surfboard profile has too few proxies"; exit 1; }
 
-for url_file in managed-url.txt surfboard-vps-path-managed-url.txt; do
-  if [[ -s "$base/$url_file" ]]; then
-    public_url="$(<"$base/$url_file")"
-    /usr/bin/printf 'url = "%s"\nsilent\nshow-error\nfail\nconnect-timeout = 10\nmax-time = 30\noutput = "/dev/null"\n' \
-      "$public_url" | /usr/bin/curl --config -
-  fi
+for url_file in surge-vps-path-managed-url.txt surfboard-vps-path-managed-url.txt; do
+  [[ -s "$base/$url_file" ]] || { print -u2 "missing public path URL: $url_file"; exit 1; }
+  public_url="$(<"$base/$url_file")"
+  public_profile="$temp_dir/$url_file.conf"
+  /usr/bin/printf 'url = "%s"\nsilent\nshow-error\nfail\nconnect-timeout = 10\nmax-time = 30\noutput = "%s"\n' \
+    "$public_url" "$public_profile" | /usr/bin/curl --config -
+  managed_url="$(/usr/bin/head -n 1 "$public_profile" | /usr/bin/awk '$1 == "#!MANAGED-CONFIG" { print $2 }')"
+  [[ "$managed_url" == "$public_url" ]] || {
+    print -u2 "public profile contains the wrong managed URL: $url_file"
+    exit 1
+  }
 done
 
 # OpenClaw is not changed by this deployment. Its local gateway must remain

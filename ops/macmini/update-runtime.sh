@@ -73,7 +73,7 @@ backup="$backups/$timestamp"
 /bin/chmod 700 "$backup"
 for name in \
   render_profile.py refresh-profile.sh render_surfboard.py \
-  refresh-surfboard.sh serve_profile.py proxy-config-health-check; do
+  refresh-surfboard.sh serve_profile.py profile-tunnel.sh proxy-config-health-check; do
   [[ -e "$bin_dir/$name" ]] && /bin/cp -p "$bin_dir/$name" "$backup/$name"
 done
 for name in source-dir deployed-commit surge-v2.conf surfboard-v1.conf; do
@@ -85,7 +85,7 @@ rollback() {
   set +e
   for name in \
     render_profile.py refresh-profile.sh render_surfboard.py \
-    refresh-surfboard.sh serve_profile.py proxy-config-health-check; do
+    refresh-surfboard.sh serve_profile.py profile-tunnel.sh proxy-config-health-check; do
     if [[ -e "$backup/$name" ]]; then
       /bin/cp -p "$backup/$name" "$bin_dir/$name"
     else
@@ -125,11 +125,12 @@ stage="$runtime/deploy-stage.$$"
 /usr/bin/install -m 700 "$release/surfboard/scripts/macmini/render_surfboard.py" "$stage/render_surfboard.py"
 /usr/bin/install -m 700 "$release/surfboard/scripts/macmini/refresh-surfboard.sh" "$stage/refresh-surfboard.sh"
 /usr/bin/install -m 600 "$release/surfboard/scripts/macmini/serve_profiles.py" "$stage/serve_profile.py"
+/usr/bin/install -m 700 "$release/ops/macmini/profile-tunnel.sh" "$stage/profile-tunnel.sh"
 /usr/bin/install -m 700 "$release/ops/macmini/health-check.sh" "$stage/proxy-config-health-check"
 
 for name in \
   render_profile.py refresh-profile.sh render_surfboard.py \
-  refresh-surfboard.sh serve_profile.py proxy-config-health-check; do
+  refresh-surfboard.sh serve_profile.py profile-tunnel.sh proxy-config-health-check; do
   /bin/mv -f "$stage/$name" "$bin_dir/$name"
 done
 

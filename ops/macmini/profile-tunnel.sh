@@ -17,7 +17,6 @@ target="$(<"$target_file")"
 exec /usr/bin/ssh -N -T \
   -i "$key" \
   -o BatchMode=yes \
-  -o ClearAllForwardings=yes \
   -o ConnectTimeout=12 \
   -o ExitOnForwardFailure=yes \
   -o LogLevel=ERROR \

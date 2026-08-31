@@ -19,6 +19,7 @@ REQUIRED = (
     "ops/macmini/profile-tunnel.plist.template",
     "ops/macmini/update-runtime.sh",
     "ops/vps/render-profile-nginx.py",
+    "ops/vps/reload-nginx-after-renewal.sh",
 )
 SYNTHETIC_NODES = """美国 US1 = hysteria2, 192.0.2.1, 443, password=test, sni=example.com, skip-cert-verify=true
 香港 HK1 = hysteria2, 192.0.2.2, 443, password=test, sni=example.com, skip-cert-verify=true
@@ -68,6 +69,7 @@ def main():
         root / "ops/macmini/health-check.sh",
         root / "ops/macmini/profile-tunnel.sh",
         root / "ops/macmini/update-runtime.sh",
+        root / "ops/vps/reload-nginx-after-renewal.sh",
     ]
 
     with tempfile.TemporaryDirectory(prefix="proxy-config-validate-") as temporary:

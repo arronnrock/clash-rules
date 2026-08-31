@@ -108,18 +108,11 @@ try {
 // A policy filter can only inspect the proxy name.  Keep the original name
 // intact and append a protocol marker, allowing Android to prefer SS/TCP when
 // a mobile network filters Hysteria2's UDP/QUIC transport.
-const hasUdpSs = selected.nodes.some(({ protocol, fields }) => (
-  protocol === "ss" && fields.slice(3).some((field) => field.trim().toLowerCase() === "udp-relay=true")
-));
 $content = $content.replace(
   marker,
-  selected.nodes.map(({ line, name, protocol, fields }) => {
-    const hasUnderlay = fields.slice(3).some((field) => field.split("=", 1)[0].trim() === "underlying-proxy");
-    const udpSs = protocol === "ss" && fields.slice(3).some((field) => field.trim().toLowerCase() === "udp-relay=true");
-    const marker = protocol === "hysteria2" ? "H2" : udpSs ? "SS][UDP" : protocol.toUpperCase();
-    const chain = protocol === "hysteria2" && hasUdpSs && !hasUnderlay ? ", underlying-proxy=H2-UNDERLAY" : "";
-    return `${name} [${marker}]${line.slice(name.length)}${chain}`;
-  }).join("\n"),
+  selected.nodes.map(({ line, name, protocol }) => (
+    `${name} [${protocol === "hysteria2" ? "H2" : protocol.toUpperCase()}]${line.slice(name.length)}`
+  )).join("\n"),
 );
 console.log(
   `Surfboard nodes: source=${selectedPlatform}, total=${selected.nodes.length}, regions=${JSON.stringify(selected.counts)}`,

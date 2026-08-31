@@ -170,13 +170,6 @@
       "filter": "(?i)(\\bSG\\b|Singapore|新加坡|🇸🇬SG\\d+|SG\\d+)"
     },
     {
-      "name": "DIRECT",
-      "type": "select",
-      "proxies": [
-        "DIRECT"
-      ]
-    },
-    {
       "name": "FINAL",
       "type": "select",
       "proxies": [

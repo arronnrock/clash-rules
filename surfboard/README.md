@@ -16,6 +16,10 @@ modify the existing Mihomo, Stash or Surge configurations.
   automatic paths before Hysteria2. This avoids a mainland mobile network's
   UDP/QUIC filtering turning an otherwise healthy profile into a total outage;
   Hysteria2 remains available for regional failover and manual selection.
+  When the private collection has an SS node with UDP relay explicitly enabled,
+  Android also chains Hysteria2 through that hidden SS underlay. This restores
+  access to Hysteria2 servers when the local network blocks their direct UDP
+  path, without changing the Hysteria2 exit node itself.
   Those rules precede `WIFI`, so the overseas setting cannot move them direct.
 - Tiger, Futu and Longbridge use `ACCESS`: they are proxied on mainland
   cellular/mainland Wi-Fi and become direct when `WIFI = DIRECT` overseas.

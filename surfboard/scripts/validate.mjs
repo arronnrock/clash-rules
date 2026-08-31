@@ -58,6 +58,7 @@ assert.equal(groups.get("AI-REGION"), "select, US-AUTO, JP-AUTO, SG-AUTO");
 assert.equal(groups.get("PROXY"), "select, PROXY-AUTO, HK, US, JP, SG, DIRECT");
 assert(groups.get("US-TCP-AUTO").includes("\\[SS\\]"));
 assert(groups.get("US-H2-AUTO").includes("\\[H2\\]"));
+assert(groups.get("H2-UNDERLAY").includes("\\[SS\\]\\[UDP\\]"));
 assert(groups.get("TCP-AUTO").includes("\\[SS\\]"));
 assert(groups.get("PROXY-AUTO").startsWith("fallback, TCP-AUTO,"));
 assert(section("General").includes("test-timeout = 15"));
@@ -161,6 +162,7 @@ const injected = await inject(profile, {}, async (request) => {
 }, { log(message) { logs.push(String(message)); } });
 assert.deepEqual(requests.map(({ platform }) => platform), ["Surfboard", "Surge"]);
 assert(injected.$content.includes("美国 US1 [H2] = hysteria2"));
+assert(injected.$content.includes("underlying-proxy=H2-UNDERLAY"));
 assert(!injected.$content.includes("建议每日更新订阅"));
 assert.equal(injected.$options._res.headers["profile-update-interval"], 6);
 assert(logs.some((line) => line.includes("source=Surge-compatible")));

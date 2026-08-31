@@ -24,6 +24,17 @@ def fail(message):
     raise SystemExit(message)
 
 
+def has_udp_relay(fields):
+    return any(field.strip().lower() == "udp-relay=true" for field in fields[3:])
+
+
+def fields_from_line(line):
+    separator = line.find("=")
+    if separator <= 0:
+        return []
+    return [field.strip() for field in line[separator + 1:].split(",")]
+
+
 def main():
     if len(sys.argv) != 3:
         fail("usage: render_surfboard.py TEMPLATE NODES")
@@ -34,8 +45,14 @@ def main():
     if template.count(MARKER) != 1:
         fail("template must contain exactly one Surfboard proxy marker")
 
+    raw_lines = raw_nodes.splitlines()
+    has_udp_ss = any(
+        fields and fields[0].lower() == "ss" and has_udp_relay(fields)
+        for fields in (fields_from_line(raw_line.strip()) for raw_line in raw_lines)
+    )
+
     nodes, names, protocols = [], [], {}
-    for raw_line in raw_nodes.splitlines():
+    for raw_line in raw_lines:
         line = raw_line.strip()
         if not line:
             continue
@@ -60,7 +77,12 @@ def main():
         # protocol.  Tag the Android-only rendered names so its automatic
         # groups can prefer SS/TCP on restrictive mainland mobile networks
         # while retaining Hysteria2 for fallback and manual selection.
-        nodes.append("{} [{}]{}".format(name, "H2" if protocol == "hysteria2" else protocol.upper(), line[separator:]))
+        has_underlying_proxy = any(field.split("=", 1)[0].strip() == "underlying-proxy" for field in fields[3:] if "=" in field)
+        suffix = line[separator:]
+        if protocol == "hysteria2" and has_udp_ss and not has_underlying_proxy:
+            suffix += ", underlying-proxy=H2-UNDERLAY"
+        marker = "H2" if protocol == "hysteria2" else "SS][UDP" if protocol == "ss" and has_udp_relay(fields) else protocol.upper()
+        nodes.append("{} [{}]{}".format(name, marker, suffix))
         names.append(name)
         protocols[protocol] = protocols.get(protocol, 0) + 1
 

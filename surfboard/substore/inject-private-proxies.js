@@ -105,9 +105,14 @@ try {
   }), selectedPlatform);
 }
 
+// A policy filter can only inspect the proxy name.  Keep the original name
+// intact and append a protocol marker, allowing Android to prefer SS/TCP when
+// a mobile network filters Hysteria2's UDP/QUIC transport.
 $content = $content.replace(
   marker,
-  selected.nodes.map(({ line }) => line).join("\n"),
+  selected.nodes.map(({ line, name, protocol }) => (
+    `${name} [${protocol === "hysteria2" ? "H2" : protocol.toUpperCase()}]${line.slice(name.length)}`
+  )).join("\n"),
 );
 console.log(
   `Surfboard nodes: source=${selectedPlatform}, total=${selected.nodes.length}, regions=${JSON.stringify(selected.counts)}`,

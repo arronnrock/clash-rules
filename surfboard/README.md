@@ -12,6 +12,10 @@ modify the existing Mihomo, Stash or Surge configurations.
 - Mainland cellular and unknown/mainland Wi-Fi use `PROXY` for non-mainland
   traffic. On overseas Wi-Fi, manually select `WIFI = DIRECT`.
 - OpenAI always uses `AI-REGION` (US by default); PayPal always uses `US-AUTO`.
+  On Android, SS/TCP candidates are preferred inside the US and default
+  automatic paths before Hysteria2. This avoids a mainland mobile network's
+  UDP/QUIC filtering turning an otherwise healthy profile into a total outage;
+  Hysteria2 remains available for regional failover and manual selection.
   Those rules precede `WIFI`, so the overseas setting cannot move them direct.
 - Tiger, Futu and Longbridge use `ACCESS`: they are proxied on mainland
   cellular/mainland Wi-Fi and become direct when `WIFI = DIRECT` overseas.

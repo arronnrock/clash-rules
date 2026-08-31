@@ -56,7 +56,11 @@ def main():
                 key = field.split("=", 1)[0].strip()
                 if key not in HYSTERIA2_PARAMS:
                     fail("unsupported Surfboard Hysteria2 parameter: " + key)
-        nodes.append(line)
+        # Surfboard policy filters can match only a proxy name, not its
+        # protocol.  Tag the Android-only rendered names so its automatic
+        # groups can prefer SS/TCP on restrictive mainland mobile networks
+        # while retaining Hysteria2 for fallback and manual selection.
+        nodes.append("{} [{}]{}".format(name, "H2" if protocol == "hysteria2" else protocol.upper(), line[separator:]))
         names.append(name)
         protocols[protocol] = protocols.get(protocol, 0) + 1
 

@@ -48,12 +48,19 @@ for (const region of ["US", "HK", "JP", "SG"]) {
   assert(groups.get(`${region}-MANUAL`));
   assert(groups.get(`${region}-AUTO`).startsWith(region === "US" ? "fallback," : "url-test,"));
   assert(groups.get(`${region}-MANUAL`).startsWith("select,"));
-  assert(groups.get(`${region}-AUTO`).includes('policy-regex-filter="(?i).*('));
-  assert(groups.get(`${region}-AUTO`).includes(').*"'));
+  if (region !== "US") {
+    assert(groups.get(`${region}-AUTO`).includes('policy-regex-filter="(?i).*('));
+    assert(groups.get(`${region}-AUTO`).includes(').*"'));
+  }
   assert.equal(groups.get(region), `select, ${region}-AUTO, ${region}-MANUAL`);
 }
 assert.equal(groups.get("AI-REGION"), "select, US-AUTO, JP-AUTO, SG-AUTO");
 assert.equal(groups.get("PROXY"), "select, PROXY-AUTO, HK, US, JP, SG, DIRECT");
+assert(groups.get("US-TCP-AUTO").includes("\\[SS\\]"));
+assert(groups.get("US-H2-AUTO").includes("\\[H2\\]"));
+assert(groups.get("TCP-AUTO").includes("\\[SS\\]"));
+assert(groups.get("PROXY-AUTO").startsWith("fallback, TCP-AUTO,"));
+assert(section("General").includes("test-timeout = 15"));
 assert.equal(groups.get("WIFI"), "select, PROXY, DIRECT");
 assert.equal(groups.get("ACCESS"), "subnet, default=PROXY, TYPE:CELLULAR=PROXY, TYPE:WIFI=WIFI");
 
@@ -153,7 +160,7 @@ const injected = await inject(profile, {}, async (request) => {
   return request.platform === "Surfboard" ? surfboardOnlyThree : completeSurgeCompatible;
 }, { log(message) { logs.push(String(message)); } });
 assert.deepEqual(requests.map(({ platform }) => platform), ["Surfboard", "Surge"]);
-assert(injected.$content.includes("美国 US1 = hysteria2"));
+assert(injected.$content.includes("美国 US1 [H2] = hysteria2"));
 assert(!injected.$content.includes("建议每日更新订阅"));
 assert.equal(injected.$options._res.headers["profile-update-interval"], 6);
 assert(logs.some((line) => line.includes("source=Surge-compatible")));

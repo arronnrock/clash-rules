@@ -18,7 +18,9 @@ Sub-Store and the Android client's existing subscription-update schedule.
 
 ## Policy defaults
 
-- `FINAL` and ordinary `PROXY` traffic default to `HK`.
+- `ACCESS` defaults to `PROXY`, whose default is `HK`. In overseas Wi-Fi,
+  manually selecting `ACCESS -> DIRECT` sends ordinary traffic and securities
+  apps direct without changing ChatGPT or PayPal.
 - `AI-REGION` defaults to `US`, but the user may explicitly select `JP` or
   `SG`. It never automatically switches countries.
 - Each region uses a same-region automatic group first and a manual fallback

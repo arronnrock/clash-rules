@@ -58,6 +58,15 @@
       "default-selected": "HK"
     },
     {
+      "name": "ACCESS",
+      "type": "select",
+      "proxies": [
+        "PROXY",
+        "DIRECT"
+      ],
+      "default-selected": "PROXY"
+    },
+    {
       "name": "US",
       "type": "select",
       "proxies": [
@@ -171,6 +180,7 @@
       "name": "FINAL",
       "type": "select",
       "proxies": [
+        "ACCESS",
         "HK",
         "PROXY",
         "US",
@@ -178,7 +188,7 @@
         "SG",
         "DIRECT"
       ],
-      "default-selected": "HK"
+      "default-selected": "ACCESS"
     }
   ],
   "rule-providers": {
@@ -291,9 +301,9 @@
     "DOMAIN-SUFFIX,paypalobjects.com,US",
     "RULE-SET,paypal,US",
 
-    "PROCESS-NAME-WILDCARD,com.tigerbrokers.stock*,PROXY",
-    "PROCESS-NAME-WILDCARD,cn.futu.trader.*,PROXY",
-    "PROCESS-NAME-WILDCARD,global.longbridge.*.android,PROXY",
+    "PROCESS-NAME-WILDCARD,com.tigerbrokers.stock*,ACCESS",
+    "PROCESS-NAME-WILDCARD,cn.futu.trader.*,ACCESS",
+    "PROCESS-NAME-WILDCARD,global.longbridge.*.android,ACCESS",
 
     "DOMAIN-SUFFIX,msftconnecttest.com,DIRECT",
     "DOMAIN-SUFFIX,msftncsi.com,DIRECT",
@@ -351,20 +361,20 @@
     "DOMAIN,generativelanguage.googleapis.com,US",
     "DOMAIN,aistudio.google.com,US",
     "RULE-SET,gemini,US",
-    "DOMAIN-SUFFIX,github.com,PROXY",
-    "DOMAIN-SUFFIX,githubusercontent.com,PROXY",
-    "DOMAIN-SUFFIX,telegram.org,PROXY",
-    "DOMAIN-SUFFIX,t.me,PROXY",
-    "DOMAIN-SUFFIX,youtube.com,PROXY",
-    "DOMAIN-SUFFIX,googlevideo.com,PROXY",
-    "DOMAIN-SUFFIX,x.com,PROXY",
-    "DOMAIN-SUFFIX,twitter.com,PROXY",
-    "DOMAIN-SUFFIX,reddit.com,PROXY",
-    "RULE-SET,apple_media,PROXY",
-    "RULE-SET,google,PROXY",
-    "RULE-SET,telegram,PROXY",
-    "RULE-SET,youtube,PROXY",
-    "RULE-SET,nsfw,PROXY",
-    "MATCH,FINAL"
+    "DOMAIN-SUFFIX,github.com,ACCESS",
+    "DOMAIN-SUFFIX,githubusercontent.com,ACCESS",
+    "DOMAIN-SUFFIX,telegram.org,ACCESS",
+    "DOMAIN-SUFFIX,t.me,ACCESS",
+    "DOMAIN-SUFFIX,youtube.com,ACCESS",
+    "DOMAIN-SUFFIX,googlevideo.com,ACCESS",
+    "DOMAIN-SUFFIX,x.com,ACCESS",
+    "DOMAIN-SUFFIX,twitter.com,ACCESS",
+    "DOMAIN-SUFFIX,reddit.com,ACCESS",
+    "RULE-SET,apple_media,ACCESS",
+    "RULE-SET,google,ACCESS",
+    "RULE-SET,telegram,ACCESS",
+    "RULE-SET,youtube,ACCESS",
+    "RULE-SET,nsfw,ACCESS",
+    "MATCH,ACCESS"
   ]
 }

@@ -46,6 +46,25 @@ for (const name of requiredGroups) {
   if (!byName.has(name)) throw new Error(`Missing required group: ${name}`);
 }
 
+const hkFilter = groups.find((group) => group.name === 'HK-AUTO')?.filter;
+if (!hkFilter) throw new Error('Missing HK-AUTO filter');
+if (/(?:BGP|家宽)/i.test(hkFilter)) {
+  throw new Error('HK filter must not contain a broad non-regional keyword.');
+}
+const hkPattern = new RegExp(hkFilter.replace(/^\(\?i\)/, ''), 'i');
+for (const [name, expected] of [
+  ['香港 HK BGP 01', true],
+  ['Hong Kong HKBN', true],
+  ['韩国 KR BGP 01', false],
+  ['尼日利亚 BGP 01', false],
+  ['美国 US BGP 01', false],
+  ['台湾 TW 家宽 01', false],
+]) {
+  if (hkPattern.test(name) !== expected) {
+    throw new Error(`HK filter regression for ${name}`);
+  }
+}
+
 const rules = config.rules.join('\n');
 for (const rule of [
   'PROCESS-NAME,com.openai.chatgpt,AI-REGION',

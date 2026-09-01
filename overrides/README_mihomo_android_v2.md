@@ -26,6 +26,8 @@ Sub-Store and the Android client's existing subscription-update schedule.
   `SG`. It never automatically switches countries.
 - Each region uses a same-region automatic group first and a manual fallback
   group second. `US-AUTO` uses ordered fallback; HK/JP/SG use latency testing.
+- HK filtering requires an explicit Hong Kong marker; generic labels such as
+  `BGP` and `家宽` are deliberately excluded.
 - Mainland and local-network traffic remain direct; international traffic uses
   `PROXY`.
 - ChatGPT and OpenAI use `AI-REGION`; PayPal uses `US`; the three securities

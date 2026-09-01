@@ -104,7 +104,7 @@
       "name": "HK-AUTO",
       "type": "url-test",
       "include-all": true,
-      "filter": "(?i)(\\bHK\\b|Hong\\s*Kong|香港|HKBN|家宽|BGP|🇭🇰HK\\d+|HK\\d+)",
+      "filter": "(?i)(\\bHK\\b|Hong\\s*Kong|香港|HKBN|🇭🇰HK\\d+|HK\\d+)",
       "url": "https://cp.cloudflare.com/generate_204",
       "interval": 600,
       "timeout": 8000,
@@ -115,7 +115,7 @@
       "name": "HK-MANUAL",
       "type": "select",
       "include-all": true,
-      "filter": "(?i)(\\bHK\\b|Hong\\s*Kong|香港|HKBN|家宽|BGP|🇭🇰HK\\d+|HK\\d+)"
+      "filter": "(?i)(\\bHK\\b|Hong\\s*Kong|香港|HKBN|🇭🇰HK\\d+|HK\\d+)"
     },
     {
       "name": "JP",

@@ -76,4 +76,17 @@ for (const rule of [
   if (!rules.includes(rule)) throw new Error(`Missing required rule: ${rule}`);
 }
 
+const aiDnsPolicies = [
+  'rule-set:openai', '+.openai.com', '+.chatgpt.com', '+.oaistatic.com',
+  '+.oaiusercontent.com', '+.auth0.com', '+.chatgptusercontent.com',
+  '+.oaistatsig.com', '+.sora.com', '+.sora.chat', '+.workos.com',
+  '+.workoscdn.com', '+.imgix.net',
+];
+for (const domain of aiDnsPolicies) {
+  const resolvers = config.dns['nameserver-policy'][domain];
+  if (!Array.isArray(resolvers) || resolvers.length !== 2 || !resolvers.every((resolver) => resolver.endsWith('#AI-REGION'))) {
+    throw new Error(`AI remote DNS redundancy missing for ${domain}`);
+  }
+}
+
 console.log(`Mihomo Android v2 valid: groups=${groups.length} rules=${config.rules.length} loops=0`);

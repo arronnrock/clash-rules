@@ -26,12 +26,66 @@
         "10.0.0.1",
         "10.0.0.200"
       ],
-      "+.openai.com": "https://1.1.1.1/dns-query#AI-REGION",
-      "+.chatgpt.com": "https://1.1.1.1/dns-query#AI-REGION",
-      "+.oaistatic.com": "https://1.1.1.1/dns-query#AI-REGION",
-      "+.oaiusercontent.com": "https://1.1.1.1/dns-query#AI-REGION",
-      "+.openai.azureedge.net": "https://1.1.1.1/dns-query#AI-REGION",
-      "+.openaiapi-site.azureedge.net": "https://1.1.1.1/dns-query#AI-REGION"
+      "rule-set:openai": [
+        "https://1.1.1.1/dns-query#AI-REGION",
+        "https://8.8.8.8/dns-query#AI-REGION"
+      ],
+      "+.openai.com": [
+        "https://1.1.1.1/dns-query#AI-REGION",
+        "https://8.8.8.8/dns-query#AI-REGION"
+      ],
+      "+.chatgpt.com": [
+        "https://1.1.1.1/dns-query#AI-REGION",
+        "https://8.8.8.8/dns-query#AI-REGION"
+      ],
+      "+.oaistatic.com": [
+        "https://1.1.1.1/dns-query#AI-REGION",
+        "https://8.8.8.8/dns-query#AI-REGION"
+      ],
+      "+.oaiusercontent.com": [
+        "https://1.1.1.1/dns-query#AI-REGION",
+        "https://8.8.8.8/dns-query#AI-REGION"
+      ],
+      "+.openai.azureedge.net": [
+        "https://1.1.1.1/dns-query#AI-REGION",
+        "https://8.8.8.8/dns-query#AI-REGION"
+      ],
+      "+.openaiapi-site.azureedge.net": [
+        "https://1.1.1.1/dns-query#AI-REGION",
+        "https://8.8.8.8/dns-query#AI-REGION"
+      ],
+      "+.auth0.com": [
+        "https://1.1.1.1/dns-query#AI-REGION",
+        "https://8.8.8.8/dns-query#AI-REGION"
+      ],
+      "+.chatgptusercontent.com": [
+        "https://1.1.1.1/dns-query#AI-REGION",
+        "https://8.8.8.8/dns-query#AI-REGION"
+      ],
+      "+.oaistatsig.com": [
+        "https://1.1.1.1/dns-query#AI-REGION",
+        "https://8.8.8.8/dns-query#AI-REGION"
+      ],
+      "+.sora.com": [
+        "https://1.1.1.1/dns-query#AI-REGION",
+        "https://8.8.8.8/dns-query#AI-REGION"
+      ],
+      "+.sora.chat": [
+        "https://1.1.1.1/dns-query#AI-REGION",
+        "https://8.8.8.8/dns-query#AI-REGION"
+      ],
+      "+.workos.com": [
+        "https://1.1.1.1/dns-query#AI-REGION",
+        "https://8.8.8.8/dns-query#AI-REGION"
+      ],
+      "+.workoscdn.com": [
+        "https://1.1.1.1/dns-query#AI-REGION",
+        "https://8.8.8.8/dns-query#AI-REGION"
+      ],
+      "+.imgix.net": [
+        "https://1.1.1.1/dns-query#AI-REGION",
+        "https://8.8.8.8/dns-query#AI-REGION"
+      ]
     }
   },
   "proxy-groups": [

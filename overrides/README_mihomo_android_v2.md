@@ -36,7 +36,8 @@ Sub-Store and the Android client's existing subscription-update schedule.
 ## ChatGPT TLS safeguards
 
 - IPv6 is disabled.
-- OpenAI-related domains use remote DoH through `AI-REGION`.
+- The OpenAI domain set and its login/static dependencies use two remote DoH
+  resolvers through `AI-REGION`.
 - Only ChatGPT/OpenAI UDP traffic is rejected, so the app falls back to
   TCP/TLS. Hysteria2 node UDP remains enabled.
 - No MITM, certificate bypass, static OpenAI CDN IP, or global UDP block is

@@ -350,8 +350,9 @@ Telegram hostname, TLS SNI, and proxy policy.
 
 The three observed Tiger endpoint suffixes (`iotaskyt.com`, `tigerfintech.com`,
 and `skytigris.cn`) are also inline in the main profile so a stale remote-rule
-cache cannot send them to `GEOIP,CN`. On Mac, Tiger Trade additionally has a
-process rule targeting `WIFI`, which catches new or rotating Tiger endpoints.
+cache cannot send them to `GEOIP,CN`. On Mac, Tiger Trade additionally uses
+the `HK` parent policy, so it can be pinned to a Hong Kong node verified against
+Tiger's TLS endpoints without altering ordinary traffic's `HK-AUTO` selection.
 The shared securities list retains the same domains for other clients.
 
 ### Mac and Android consistency

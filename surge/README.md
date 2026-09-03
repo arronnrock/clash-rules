@@ -81,8 +81,8 @@ injection script removes it without changing the shared `private` collection.
 - Google connectivity, Google Play and Android/OEM compatibility rules.
 - OpenAI auth/static/upload dependencies on the same `AI-REGION` decision. No
   MITM, rewrite, certificate bypass or QUIC override is introduced.
-- Tiger, Futu/moomoo and Longbridge traffic as one rule category whose result
-  depends on the access network, not a separate business policy group.
+- Tiger, Futu/moomoo and Longbridge traffic as one `SECURITIES` category with
+  real-traffic failure learning, cross-node retry and manual region control.
 
 ### Merge
 
@@ -105,8 +105,9 @@ recreated in `surge.conf`:
 - Separate business select groups for OpenAI, Google, Apple AI and Telegram are
   unnecessary. One `AI-REGION` selector exists only because the required
   region must be changed explicitly rather than by automatic cross-country
-  fallback. PayPal points to `US-AUTO`; other categories point directly to
-  `WIFI` or `DIRECT`.
+  fallback. PayPal points to `US-AUTO`. `SECURITIES` is the sole additional
+  service group because broker endpoints demonstrably reject otherwise healthy
+  proxy nodes and therefore need site-aware failover.
 - Two Surge A/B profiles: superseded by one shared core and one runtime `WIFI`
   decision. Legacy files remain for audit history.
 
@@ -142,11 +143,16 @@ recreated in `surge.conf`:
 - Every region exposes a separate `*-MANUAL` group. The parent region defaults
   to `*-AUTO`, and users may switch either the parent or manual node at any
   time.
+- `SECURITIES-AUTO` uses Surge Smart across the four requested regions. It
+  prefers HK initially, then learns successful and failed policies separately
+  for Tiger, Futu and Longbridge hosts and retries another node after a silent
+  connection failure. `SECURITIES` also exposes each region and `DIRECT` for
+  manual override.
 - On iOS, AI, PayPal and LAN rules are evaluated before
   `SUBNET,TYPE:CELLULAR,DIRECT`; all other cellular traffic is direct.
-- Securities rules are below that cellular catch-all: CMHK cellular therefore
-  stays direct. On mainland Wi-Fi they resolve through `WIFI = PROXY`; on HK,
-  MO and every other overseas Wi-Fi they resolve through `WIFI = DIRECT`.
+- Securities rules are below that cellular catch-all: iOS CMHK cellular stays
+  direct. On Wi-Fi they use `SECURITIES`; choose its `DIRECT` option while on
+  an overseas network when a direct broker path is desired.
 - On Wi-Fi and on Mac, unmatched traffic uses `WIFI`. A DIRECT public-country
   check sets it to `PROXY` only in CN and to `DIRECT` in HK, MO, and all other
   countries.
@@ -323,11 +329,11 @@ WIFI -> PROXY | DIRECT
 ```
 
 The first member is the default: each region starts on AUTO, `AI-REGION` starts
-on `US-AUTO`, `PROXY-AUTO` starts on HK, and `WIFI` starts on PROXY until the
-region script obtains a valid result. `AI-REGION` is a normal select group, so
-JP/SG require an intentional manual change. PayPal deliberately uses
-`US-AUTO` directly and cannot be moved outside the US region by changing
-`AI-REGION`.
+on `US-AUTO`, `PROXY-AUTO` starts on HK, `SECURITIES` starts on its Smart group,
+and `WIFI` starts on PROXY until the region script obtains a valid result.
+`AI-REGION` is a normal select group, so JP/SG require an intentional manual
+change. PayPal deliberately uses `US-AUTO` directly and cannot be moved outside
+the US region by changing `AI-REGION`.
 
 ### Access-network matrix
 
@@ -335,7 +341,7 @@ JP/SG require an intentional manual change. PayPal deliberately uses
 | --- | --- | --- | --- | --- |
 | OpenAI / necessary AI | `AI-REGION` (default US) | same | same | same |
 | US-region PayPal | `US-AUTO` | `US-AUTO` | `US-AUTO` | `US-AUTO` |
-| Tiger / Futu / Longbridge | `DIRECT` | `WIFI = PROXY` | `WIFI = DIRECT` | `WIFI = DIRECT` |
+| Tiger / Futu / Longbridge | `DIRECT` | `SECURITIES-AUTO` | `SECURITIES-AUTO` or manual `DIRECT` | `SECURITIES-AUTO` or manual `DIRECT` |
 | Other unmatched traffic | `DIRECT` | `WIFI = PROXY` | `WIFI = DIRECT` | `WIFI = DIRECT` |
 
 The country result is based on a `DIRECT` public-egress check. HK/MO and other
@@ -350,21 +356,15 @@ Telegram hostname, TLS SNI, and proxy policy.
 
 The three observed Tiger endpoint suffixes (`iotaskyt.com`, `tigerfintech.com`,
 and `skytigris.cn`) are also inline in the main profile so a stale remote-rule
-cache cannot send them to `GEOIP,CN`. On Mac, Tiger Trade additionally uses
-the `HK` parent policy, so it can be pinned to a Hong Kong node verified against
-Tiger's TLS endpoints without altering ordinary traffic's `HK-AUTO` selection.
-The shared securities list retains the same domains for other clients.
+cache cannot send them to `GEOIP,CN`. Mac process rules cover Tiger Trade,
+Longbridge, Futubull and moomoo, while the shared securities list covers all
+three broker families on Mac and iOS. All of these routes target `SECURITIES`.
 
 ### Mac and Android consistency
 
-Mac uses this same profile and therefore the same destination policies. Android
-remains on the existing Mihomo configuration in this phase, as required; no
-production override is changed. Its eventual semantic mapping should be
-identical: AI -> a manually fixed US/JP/SG region with same-region node
-fallback, US-region PayPal -> stable US,
-mainland destinations -> direct, and other international destinations -> the
-current network's proxy decision. Android implementation and Surfboard work are
-explicitly outside this migration phase.
+Mac uses this same profile and therefore the same destination policies. The
+Android Mihomo override implements the same `SECURITIES` parent and region-level
+fallback semantics, while retaining Android's different cellular default.
 
 ## Network-region script
 
@@ -462,8 +462,9 @@ node surge/scripts/validate-v2.mjs
    disconnecting before running the script. Confirm the log says “unchanged”
    and the previous `WIFI` selection remains intact.
 10. On iPhone, verify the access-network matrix: Tiger/Futu/Longbridge must be
-    DIRECT on CMHK cellular, use PROXY on mainland Wi-Fi, and be DIRECT on HK,
-    MO and another overseas Wi-Fi. Capture unmatched app hosts from Surge's
+    DIRECT on CMHK cellular and use `SECURITIES` on mainland Wi-Fi. On an
+    overseas Wi-Fi network, verify both the automatic route and the manual
+    `SECURITIES -> DIRECT` option. Capture unmatched app hosts from Surge's
     request log before adding them to `securities-wifi.list`.
 
 The phase is complete when the profile loads, all four region groups populate,

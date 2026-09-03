@@ -41,7 +41,10 @@ const visit = (name, chain = []) => {
 
 for (const name of byName.keys()) visit(name);
 
-const requiredGroups = ['ai-region', 'access', 'proxy', 'us', 'hk', 'jp', 'sg', 'final'];
+const requiredGroups = [
+  'ai-region', 'access', 'proxy', 'securities', 'securities-auto',
+  'sec-hk', 'sec-jp', 'sec-sg', 'sec-us', 'us', 'hk', 'jp', 'sg', 'final',
+];
 for (const name of requiredGroups) {
   if (!byName.has(name)) throw new Error(`Missing required group: ${name}`);
 }
@@ -65,15 +68,45 @@ for (const [name, expected] of [
   }
 }
 
+const securities = groups.find((group) => group.name === 'SECURITIES');
+if (JSON.stringify(securities?.proxies) !== JSON.stringify([
+  'SECURITIES-AUTO', 'SEC-HK', 'SEC-JP', 'SEC-SG', 'SEC-US', 'DIRECT',
+])) {
+  throw new Error('SECURITIES must retain automatic, regional and DIRECT choices.');
+}
+const securitiesAuto = groups.find((group) => group.name === 'SECURITIES-AUTO');
+if (JSON.stringify(securitiesAuto?.proxies) !== JSON.stringify(['SEC-HK', 'SEC-JP', 'SEC-SG', 'SEC-US'])) {
+  throw new Error('SECURITIES-AUTO regional fallback order changed.');
+}
+for (const name of ['SECURITIES-AUTO', 'SEC-HK', 'SEC-JP', 'SEC-SG', 'SEC-US']) {
+  const group = groups.find((candidate) => candidate.name === name);
+  if (group?.type !== 'fallback' || group.url !== 'https://da.tigerfintech.com/' || group.lazy !== false) {
+    throw new Error(`${name} must proactively test the live securities TLS endpoint.`);
+  }
+  if (group['expected-status'] !== '200-499') {
+    throw new Error(`${name} must accept an HTTP response only after TLS succeeds.`);
+  }
+}
+
 const rules = config.rules.join('\n');
 for (const rule of [
   'PROCESS-NAME,com.openai.chatgpt,AI-REGION',
   'NETWORK,UDP)),REJECT',
   'RULE-SET,openai,AI-REGION',
   'PROCESS-NAME,com.paypal.android.p2pmobile,US',
+  'PROCESS-NAME-WILDCARD,com.tigerbrokers.stock*,SECURITIES',
+  'PROCESS-NAME-WILDCARD,cn.futu.trader.*,SECURITIES',
+  'PROCESS-NAME-WILDCARD,global.longbridge.*.android,SECURITIES',
+  'DOMAIN-SUFFIX,itiger.com,SECURITIES',
+  'DOMAIN-SUFFIX,futunn.com,SECURITIES',
+  'DOMAIN-SUFFIX,longbridge.com,SECURITIES',
+  'DOMAIN-SUFFIX,longbridge.cn,SECURITIES',
   'MATCH,ACCESS',
 ]) {
   if (!rules.includes(rule)) throw new Error(`Missing required rule: ${rule}`);
+}
+if (rules.indexOf('DOMAIN-SUFFIX,itiger.com,SECURITIES') > rules.indexOf('GEOSITE,cn,DIRECT')) {
+  throw new Error('Securities domains must precede mainland direct rules.');
 }
 
 const aiDnsPolicies = [

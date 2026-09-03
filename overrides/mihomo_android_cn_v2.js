@@ -121,6 +121,78 @@
       "default-selected": "PROXY"
     },
     {
+      "name": "SECURITIES",
+      "type": "select",
+      "proxies": [
+        "SECURITIES-AUTO",
+        "SEC-HK",
+        "SEC-JP",
+        "SEC-SG",
+        "SEC-US",
+        "DIRECT"
+      ],
+      "default-selected": "SECURITIES-AUTO"
+    },
+    {
+      "name": "SECURITIES-AUTO",
+      "type": "fallback",
+      "proxies": [
+        "SEC-HK",
+        "SEC-JP",
+        "SEC-SG",
+        "SEC-US"
+      ],
+      "url": "https://da.tigerfintech.com/",
+      "interval": 300,
+      "timeout": 8000,
+      "lazy": false,
+      "expected-status": "200-499"
+    },
+    {
+      "name": "SEC-HK",
+      "type": "fallback",
+      "include-all": true,
+      "filter": "(?i)(\\bHK\\b|Hong\\s*Kong|香港|HKBN|🇭🇰HK\\d+|HK\\d+)",
+      "url": "https://da.tigerfintech.com/",
+      "interval": 300,
+      "timeout": 8000,
+      "lazy": false,
+      "expected-status": "200-499"
+    },
+    {
+      "name": "SEC-JP",
+      "type": "fallback",
+      "include-all": true,
+      "filter": "(?i)(\\bJP\\b|Japan|日本|东京|大阪|埼玉|樱花|biglobe|c87s4|🇯🇵JP\\d+|JP\\d+)",
+      "url": "https://da.tigerfintech.com/",
+      "interval": 300,
+      "timeout": 8000,
+      "lazy": false,
+      "expected-status": "200-499"
+    },
+    {
+      "name": "SEC-SG",
+      "type": "fallback",
+      "include-all": true,
+      "filter": "(?i)(\\bSG\\b|Singapore|新加坡|🇸🇬SG\\d+|SG\\d+)",
+      "url": "https://da.tigerfintech.com/",
+      "interval": 300,
+      "timeout": 8000,
+      "lazy": false,
+      "expected-status": "200-499"
+    },
+    {
+      "name": "SEC-US",
+      "type": "fallback",
+      "include-all": true,
+      "filter": "(?i)(\\bUS\\b|USA|United\\s*States|美国|洛杉矶|圣何塞|西雅图|达拉斯|纽约|Hawaiian|Leaseweb|Misaka|星链|c87s1|c87s2|c87s3|🇺🇸US\\d+|US\\d+)",
+      "url": "https://da.tigerfintech.com/",
+      "interval": 300,
+      "timeout": 8000,
+      "lazy": false,
+      "expected-status": "200-499"
+    },
+    {
       "name": "US",
       "type": "select",
       "proxies": [
@@ -348,9 +420,24 @@
     "DOMAIN-SUFFIX,paypalobjects.com,US",
     "RULE-SET,paypal,US",
 
-    "PROCESS-NAME-WILDCARD,com.tigerbrokers.stock*,ACCESS",
-    "PROCESS-NAME-WILDCARD,cn.futu.trader.*,ACCESS",
-    "PROCESS-NAME-WILDCARD,global.longbridge.*.android,ACCESS",
+    "PROCESS-NAME-WILDCARD,com.tigerbrokers.stock*,SECURITIES",
+    "PROCESS-NAME-WILDCARD,cn.futu.trader.*,SECURITIES",
+    "PROCESS-NAME-WILDCARD,global.longbridge.*.android,SECURITIES",
+    "DOMAIN-SUFFIX,itiger.com,SECURITIES",
+    "DOMAIN-SUFFIX,laohu8.com,SECURITIES",
+    "DOMAIN-SUFFIX,tigerbrokers.com,SECURITIES",
+    "DOMAIN-SUFFIX,tigerbrokers.com.hk,SECURITIES",
+    "DOMAIN-SUFFIX,iotaskyt.com,SECURITIES",
+    "DOMAIN-SUFFIX,tigerfintech.com,SECURITIES",
+    "DOMAIN-SUFFIX,skytigris.cn,SECURITIES",
+    "DOMAIN-SUFFIX,futunn.com,SECURITIES",
+    "DOMAIN-SUFFIX,futu5.com,SECURITIES",
+    "DOMAIN-SUFFIX,futuhk.com,SECURITIES",
+    "DOMAIN-SUFFIX,moomoo.com,SECURITIES",
+    "DOMAIN-SUFFIX,longbridge.com,SECURITIES",
+    "DOMAIN-SUFFIX,longbridge.cn,SECURITIES",
+    "DOMAIN-SUFFIX,longbridge.hk,SECURITIES",
+    "DOMAIN-SUFFIX,longbridge.sg,SECURITIES",
 
     "DOMAIN-SUFFIX,msftconnecttest.com,DIRECT",
     "DOMAIN-SUFFIX,msftncsi.com,DIRECT",

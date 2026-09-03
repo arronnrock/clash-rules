@@ -83,6 +83,11 @@ assert.equal(groups.get("AI-REGION"), "select, US-AUTO, JP-AUTO, SG-AUTO");
 assert.equal(groups.get("PROXY-AUTO"), "fallback, HK-AUTO, SG-AUTO, JP-AUTO, US-AUTO, interval=300, timeout=5, evaluate-before-use=true");
 assert.equal(groups.get("PROXY"), "select, PROXY-AUTO, HK, US, JP, SG, DIRECT");
 assert.equal(groups.get("WIFI"), "select, PROXY, DIRECT");
+assert(groups.get("SECURITIES-AUTO")?.startsWith("smart,"));
+assert(groups.get("SECURITIES-AUTO")?.includes("include-all-proxies=true"));
+assert(groups.get("SECURITIES-AUTO")?.includes("policy-priority="));
+assert(groups.get("SECURITIES-AUTO")?.includes("evaluate-before-use=true"));
+assert.equal(groups.get("SECURITIES"), "select, SECURITIES-AUTO, HK, JP, SG, US, DIRECT");
 for (const removed of ["TW", "OTHER", "NETWORK", "GLOBAL-PROXY", "US-JP-SG", "OPENAI_GROUP", "GOOGLE_GROUP", "APPLE_AI_GROUP", "TELEGRAM_GROUP"]) {
   assert(!groups.has(removed), `Removed group unexpectedly present: ${removed}`);
 }
@@ -136,11 +141,14 @@ for (const fragment of [
   "/ai-stable.list,AI-REGION",
   "/paypal-us.list,US-AUTO",
   "TYPE:CELLULAR,DIRECT",
-  "DOMAIN-SUFFIX,iotaskyt.com,WIFI",
-  "DOMAIN-SUFFIX,tigerfintech.com,WIFI",
-  "DOMAIN-SUFFIX,skytigris.cn,WIFI",
-  "PROCESS-NAME,Tiger Trade,HK #!MACOS-ONLY",
-  "/securities-wifi.list,WIFI",
+  "DOMAIN-SUFFIX,iotaskyt.com,SECURITIES",
+  "DOMAIN-SUFFIX,tigerfintech.com,SECURITIES",
+  "DOMAIN-SUFFIX,skytigris.cn,SECURITIES",
+  "PROCESS-NAME,Tiger Trade,SECURITIES #!MACOS-ONLY",
+  "PROCESS-NAME,longbridge,SECURITIES #!MACOS-ONLY",
+  "PROCESS-NAME,Futubull,SECURITIES #!MACOS-ONLY",
+  "PROCESS-NAME,moomoo,SECURITIES #!MACOS-ONLY",
+  "/securities-wifi.list,SECURITIES",
   "/wechat-direct-v2.list,DIRECT",
   "/compat-direct.list,DIRECT",
   "/china-direct-v2.list,DIRECT",
@@ -152,12 +160,12 @@ for (const fragment of [
 }
 assert(index("/ai-stable.list,AI-REGION") < index("TYPE:CELLULAR,DIRECT"));
 assert(index("/paypal-us.list,US-AUTO") < index("TYPE:CELLULAR,DIRECT"));
-assert(index("TYPE:CELLULAR,DIRECT") < index("DOMAIN-SUFFIX,iotaskyt.com,WIFI"));
-assert(index("PROCESS-NAME,Tiger Trade,HK #!MACOS-ONLY") < index("DOMAIN-SUFFIX,iotaskyt.com,WIFI"));
-assert(index("DOMAIN-SUFFIX,skytigris.cn,WIFI") < index("GEOIP,CN,DIRECT"));
-assert(index("TYPE:CELLULAR,DIRECT") < index("/securities-wifi.list,WIFI"));
-assert(index("PROCESS-NAME,Tiger Trade,HK") < index("/securities-wifi.list,WIFI"));
-assert(index("/securities-wifi.list,WIFI") < index("/wechat-direct-v2.list,DIRECT"));
+assert(index("TYPE:CELLULAR,DIRECT") < index("DOMAIN-SUFFIX,iotaskyt.com,SECURITIES"));
+assert(index("PROCESS-NAME,Tiger Trade,SECURITIES #!MACOS-ONLY") < index("DOMAIN-SUFFIX,iotaskyt.com,SECURITIES"));
+assert(index("DOMAIN-SUFFIX,skytigris.cn,SECURITIES") < index("GEOIP,CN,DIRECT"));
+assert(index("TYPE:CELLULAR,DIRECT") < index("/securities-wifi.list,SECURITIES"));
+assert(index("PROCESS-NAME,Tiger Trade,SECURITIES") < index("/securities-wifi.list,SECURITIES"));
+assert(index("/securities-wifi.list,SECURITIES") < index("/wechat-direct-v2.list,DIRECT"));
 assert(index("GEOIP,CN,DIRECT") < index("/international-wifi.list,WIFI"));
 assert.equal(ruleLines.at(-1), "FINAL,WIFI,dns-failed");
 
@@ -205,6 +213,7 @@ for (const required of [
   "DOMAIN-SUFFIX,skytigris.cn",
   "DOMAIN-SUFFIX,futunn.com",
   "DOMAIN-SUFFIX,longbridge.com",
+  "DOMAIN-SUFFIX,longbridge.cn",
 ]) {
   assert(lists.get("securities-wifi.list").has(required), `Securities list missing ${required}`);
 }

@@ -19,8 +19,14 @@ Sub-Store and the Android client's existing subscription-update schedule.
 ## Policy defaults
 
 - `ACCESS` defaults to `PROXY`, whose default is `HK`. In overseas Wi-Fi,
-  manually selecting `ACCESS -> DIRECT` sends ordinary traffic and securities
-  apps direct without changing ChatGPT or PayPal.
+  manually selecting `ACCESS -> DIRECT` sends ordinary traffic direct without
+  changing ChatGPT, PayPal or the dedicated securities policy.
+- `SECURITIES` defaults to `SECURITIES-AUTO`. It tests a live Tiger TLS endpoint
+  through every regional node, tries HK first, and falls back through JP, SG and
+  US. Each regional securities group and `DIRECT` remain available manually.
+- On mainland cellular and Wi-Fi, Tiger, Futu and Longbridge use `SECURITIES`.
+  On an overseas Wi-Fi network, select `SECURITIES -> DIRECT` when a direct
+  broker path is preferred.
 - `DIRECT` is Mihomo's built-in policy, not a user-defined proxy group.
 - `AI-REGION` defaults to `US`, but the user may explicitly select `JP` or
   `SG`. It never automatically switches countries.
@@ -31,7 +37,8 @@ Sub-Store and the Android client's existing subscription-update schedule.
 - Mainland and local-network traffic remain direct; international traffic uses
   `PROXY`.
 - ChatGPT and OpenAI use `AI-REGION`; PayPal uses `US`; the three securities
-  app package families use `PROXY`.
+  app package families and their known domains use `SECURITIES` before any
+  mainland-domain rule can capture them.
 
 ## ChatGPT TLS safeguards
 

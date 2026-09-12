@@ -75,9 +75,20 @@ console.log(
   `Surge v2 nodes: total=${proxyLines.length}, regions=${JSON.stringify(regionCounts)}`,
 );
 
+// fallback follows declaration order. Reorder only US slots, keeping stable
+// order inside each tier and leaving other regions and all credentials intact.
+const jmsPattern = /(\bJMS\b|Just[\s_-]*My[\s_-]*Socks|\bc87s[123]\b)/i;
+const orderedUS = proxyLines
+  .filter(({ name }) => regionPatterns.US.test(name))
+  .sort((a, b) => Number(jmsPattern.test(a.name)) - Number(jmsPattern.test(b.name)));
+let usIndex = 0;
+const orderedProxyLines = proxyLines.map((proxy) =>
+  regionPatterns.US.test(proxy.name) ? orderedUS[usIndex++] : proxy,
+);
+
 $content = $content.replace(
   marker,
-  proxyLines.map(({ line }) => line).join("\n"),
+  orderedProxyLines.map(({ line }) => line).join("\n"),
 );
 
 if ($options) {

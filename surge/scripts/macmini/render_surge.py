@@ -27,6 +27,18 @@ def fail(message):
     raise SystemExit(message)
 
 
+def prioritize_us(nodes):
+    """Stable non-JMS-first ordering within US slots; other regions stay put."""
+    jms = re.compile(r"(\bJMS\b|Just[\s_-]*My[\s_-]*Socks|\bc87s[123]\b)", re.I)
+    def name(line):
+        return line.split("=", 1)[0].strip()
+    ordered = iter(sorted(
+        (line for line in nodes if REGIONS["US"].search(name(line))),
+        key=lambda line: bool(jms.search(name(line))),
+    ))
+    return [next(ordered) if REGIONS["US"].search(name(line)) else line for line in nodes]
+
+
 def main():
     if len(sys.argv) != 3:
         fail("usage: render_surge.py TEMPLATE NODES")
@@ -64,7 +76,7 @@ def main():
     if missing:
         fail("no nodes matched required regions: " + ", ".join(missing))
 
-    profile = template.replace(MARKER, "\n".join(nodes))
+    profile = template.replace(MARKER, "\n".join(prioritize_us(nodes)))
     for required in ("[General]", "[Proxy]", "[Proxy Group]", "[Rule]"):
         if required not in profile:
             fail("generated profile is missing " + required)

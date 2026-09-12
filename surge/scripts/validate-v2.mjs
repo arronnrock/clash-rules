@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
+import os from "node:os";
+import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
@@ -279,6 +281,38 @@ assert(injected.$content.includes("Sub-Store JP sample = direct"));
 assert(injected.$content.includes("Sub-Store SG sample = direct"));
 assert(!injected.$content.includes("建议每日更新订阅"));
 assert.equal(injected.$options._res.headers["profile-update-interval"], 24);
+
+// Keep both independent production renderers behaviorally identical. Include
+// legacy JMS names, interleaved regions, stable tiers, and single-tier inputs.
+const orderingCases = [
+  ["JMS US first", "HK keep", "US preferred A", "c87s2.example.com", "JP keep", "US preferred B", "SG keep", "JustMySocks US last"],
+  ["JMS US only", "HK keep", "c87s1.example.com", "JP keep", "SG keep"],
+  ["US preferred A", "HK keep", "US preferred B", "JP keep", "SG keep"],
+];
+const expectedOrders = [
+  ["US preferred A", "HK keep", "US preferred B", "JMS US first", "JP keep", "c87s2.example.com", "SG keep", "JustMySocks US last"],
+  orderingCases[1],
+  orderingCases[2],
+];
+const temporary = fs.mkdtempSync(path.join(os.tmpdir(), "surge-us-priority-"));
+try {
+  for (const [index, names] of orderingCases.entries()) {
+    const input = names.map((name) => `${name} = direct`).join("\n");
+    const result = await inject(profile, {}, async () => input);
+    const nodesPath = path.join(temporary, "nodes.conf");
+    fs.writeFileSync(nodesPath, input);
+    const python = execFileSync("/usr/bin/python3", [
+      path.join(scriptDir, "macmini/render_surge.py"),
+      path.join(surgeDir, "surge.conf"), nodesPath,
+    ], { encoding: "utf8" });
+    assert.equal(result.$content, python, "MacBook and Mac mini ordering differs");
+    const proxyPart = result.$content.split("[Proxy]\n")[1].split("\n[Proxy Group]")[0].trim();
+    assert.deepEqual(proxyPart.split("\n").map((line) => line.split("=")[0].trim()), expectedOrders[index]);
+    assert.equal(result.$content.replace(proxyPart, "NODES"), profile.replace("# Sub-Store injects the private Surge proxy list here.", "NODES"));
+  }
+} finally {
+  fs.rmSync(temporary, { recursive: true, force: true });
+}
 
 await assert.rejects(
   inject(

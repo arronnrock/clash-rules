@@ -252,6 +252,11 @@ issue, copy it into `surge/`, or override the `.private/` Git ignore rule.
 
 ### Surge Mac automatic node refresh
 
+Both the MacBook injector and Mac mini renderer keep US fallback candidates in
+stable non-JMS-first order, with JMS/JustMySocks (including legacy c87s1/2/3
+names) retained at the end. Only US declaration slots are reordered: credentials,
+other regions, routing rules, and manual selections are not rewritten.
+
 Surge Mac normalizes an imported local profile and may add device-local
 settings. Do not periodically overwrite that active profile with the public
 template. Instead, stream the current `private` collection through

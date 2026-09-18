@@ -41,6 +41,10 @@ Run a read-only health check at any time:
 ~/Library/Application\ Support/SurgeProfileGateway/bin/proxy-config-health-check
 ```
 
-The existing LaunchAgents continue refreshing the pinned templates every six
+The Surge LaunchAgent refreshes hourly; Surfboard continues refreshing every six
 hours. A later GitHub push has no production effect until its exact commit is
 deployed.
+
+If the Mac mini has no active Surfboard token/profile, deploy a Surge-only
+change with `proxy-config-update --surge-only FULL_40_CHARACTER_COMMIT`. This
+keeps the existing Surfboard state untouched and checks only active endpoints.

@@ -2,6 +2,8 @@
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import hmac
 import os
+import signal
+import subprocess
 from urllib.parse import parse_qs, urlsplit
 
 
@@ -15,6 +17,21 @@ MANAGED_URL_FILES = {
     "/surge-v2.conf": "surge-vps-path-managed-url.txt",
     "/surfboard-v1.conf": "surfboard-vps-path-managed-url.txt",
 }
+
+
+def refresh_surge():
+    """Fetch current private nodes before returning a Surge managed update."""
+    job = os.path.join(BASE, "bin", "refresh-profile.sh")
+    process = subprocess.Popen(
+        ["/bin/zsh", job], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        start_new_session=True,
+    )
+    try:
+        return process.wait(timeout=20) == 0
+    except subprocess.TimeoutExpired:
+        os.killpg(process.pid, signal.SIGTERM)
+        process.wait(timeout=5)
+        return False
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -45,6 +62,18 @@ class Handler(BaseHTTPRequestHandler):
         if not expected or not hmac.compare_digest(supplied, expected):
             self.send_error(404)
             return
+        # iOS manual and automatic updates use GET. Fetch nodes first so a
+        # successful download cannot silently serve the six-hour-old snapshot.
+        # Health checks use a header to inspect the last-good file without
+        # triggering another upstream fetch during a deployment.
+        if include_body and parsed.path == "/surge-v2.conf" and self.headers.get("X-Proxy-Config-Health") != "1":
+            try:
+                refreshed = refresh_surge()
+            except (OSError, subprocess.SubprocessError):
+                refreshed = False
+            if not refreshed:
+                self.send_error(503, "Surge node refresh failed; previous profile retained")
+                return
         try:
             with open(os.path.join(BASE, profile_name), "rb") as handle:
                 profile = handle.read()
@@ -72,13 +101,14 @@ class Handler(BaseHTTPRequestHandler):
         if not managed_url.startswith("https://"):
             self.send_error(503)
             return
-        directive = "#!MANAGED-CONFIG {} interval=21600 strict=false\n".format(managed_url)
+        interval = 3600 if parsed.path == "/surge-v2.conf" else 21600
+        directive = "#!MANAGED-CONFIG {} interval={} strict=false\n".format(managed_url, interval)
         body = directive.encode("utf-8") + profile
         self.send_response(200)
         self.send_header("Content-Type", "text/plain; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
         self.send_header("Cache-Control", "no-store")
-        self.send_header("profile-update-interval", "6")
+        self.send_header("profile-update-interval", "1" if parsed.path == "/surge-v2.conf" else "6")
         self.end_headers()
         if include_body:
             self.wfile.write(body)

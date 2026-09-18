@@ -60,6 +60,7 @@ def main():
         root / "surge/scripts/macmini/render_surge.py",
         root / "surfboard/scripts/macmini/render_surfboard.py",
         root / "surfboard/scripts/macmini/serve_profiles.py",
+        root / "ops/macmini/test_serve_profiles.py",
         root / "ops/macmini/validate-runtime.py",
         root / "ops/vps/render-profile-nginx.py",
     ]
@@ -77,6 +78,7 @@ def main():
         env = dict(os.environ)
         env["PYTHONPYCACHEPREFIX"] = str(temp / "pycache")
         run([sys.executable, "-m", "py_compile"] + [str(path) for path in python_files], env=env)
+        run([sys.executable, str(root / "ops/macmini/test_serve_profiles.py")], env=env)
         for path in shell_files:
             run(["/bin/zsh", "-n", str(path)])
         run(["/usr/bin/plutil", "-lint", str(root / "ops/macmini/profile-tunnel.plist.template")])

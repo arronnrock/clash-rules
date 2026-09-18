@@ -252,6 +252,14 @@ issue, copy it into `surge/`, or override the `.private/` Git ignore rule.
 
 ### Surge Mac automatic node refresh
 
+The Mac mini refreshes the complete Surge profile hourly. Its managed gateway
+also fetches `private` before each authenticated Surge profile GET, so tapping
+Update in Surge downloads freshly rendered nodes. If the source fetch or render
+fails, the gateway returns an update error and keeps the last-good profile.
+The Surge managed header requests hourly updates while the main app is running;
+iOS may delay automatic updates in the background. Surfboard stays on its
+separate six-hour schedule.
+
 Both the MacBook injector and Mac mini renderer keep US fallback candidates in
 stable non-JMS-first order, with JMS/JustMySocks (including legacy c87s1/2/3
 names) retained at the end. Only US declaration slots are reordered: credentials,

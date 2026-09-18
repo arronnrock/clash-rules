@@ -1,8 +1,13 @@
 #!/bin/zsh
 set -euo pipefail
 
+surge_only=false
+if [[ $# -eq 2 && "$1" == "--surge-only" ]]; then
+  surge_only=true
+  shift
+fi
 if [[ $# -ne 1 || ! "$1" =~ ^[0-9a-f]{40}$ ]]; then
-  print -u2 "usage: proxy-config-update FULL_40_CHARACTER_COMMIT"
+  print -u2 "usage: proxy-config-update [--surge-only] FULL_40_CHARACTER_COMMIT"
   exit 2
 fi
 
@@ -18,9 +23,12 @@ runtime="$base/runtime"
 backups="$base/deploy-backups"
 lock="$runtime/deploy.lock"
 uid="$(/usr/bin/id -u)"
+refresh_plist="$HOME/Library/LaunchAgents/com.arronnrock.surge-profile-refresh.plist"
+refresh_label="com.arronnrock.surge-profile-refresh"
 
 /bin/mkdir -p "$service_root" "$releases" "$bin_dir" "$runtime" "$backups"
 /bin/chmod 700 "$service_root" "$releases" "$base" "$bin_dir" "$runtime" "$backups"
+[[ -f "$refresh_plist" ]] || { print -u2 "missing Surge refresh LaunchAgent"; exit 1; }
 if ! /bin/mkdir "$lock" 2>/dev/null; then
   print -u2 "another deployment is running or a stale lock exists: $lock"
   exit 1
@@ -79,6 +87,7 @@ done
 for name in source-dir deployed-commit surge-v2.conf surfboard-v1.conf; do
   [[ -e "$base/$name" ]] && /bin/cp -p "$base/$name" "$backup/$name"
 done
+/bin/cp -p "$refresh_plist" "$backup/surge-profile-refresh.plist"
 
 rollback() {
   trap - ERR
@@ -99,6 +108,9 @@ rollback() {
       /bin/rm -f "$base/$name"
     fi
   done
+  /bin/cp -p "$backup/surge-profile-refresh.plist" "$refresh_plist"
+  /bin/launchctl bootout "gui/$uid/$refresh_label" >/dev/null 2>&1
+  /bin/launchctl bootstrap "gui/$uid" "$refresh_plist" >/dev/null 2>&1
   if [[ -n "$previous_release" ]]; then
     /bin/ln -s "$previous_release" "$current_link.rollback.$$"
     /bin/mv -fh "$current_link.rollback.$$" "$current_link"
@@ -122,20 +134,33 @@ stage="$runtime/deploy-stage.$$"
 /bin/mkdir "$stage"
 /usr/bin/install -m 700 "$release/surge/scripts/macmini/render_surge.py" "$stage/render_profile.py"
 /usr/bin/install -m 700 "$release/surge/scripts/macmini/refresh-surge.sh" "$stage/refresh-profile.sh"
-/usr/bin/install -m 700 "$release/surfboard/scripts/macmini/render_surfboard.py" "$stage/render_surfboard.py"
-/usr/bin/install -m 700 "$release/surfboard/scripts/macmini/refresh-surfboard.sh" "$stage/refresh-surfboard.sh"
+if [[ "$surge_only" == false ]]; then
+  /usr/bin/install -m 700 "$release/surfboard/scripts/macmini/render_surfboard.py" "$stage/render_surfboard.py"
+  /usr/bin/install -m 700 "$release/surfboard/scripts/macmini/refresh-surfboard.sh" "$stage/refresh-surfboard.sh"
+fi
 /usr/bin/install -m 600 "$release/surfboard/scripts/macmini/serve_profiles.py" "$stage/serve_profile.py"
 /usr/bin/install -m 700 "$release/ops/macmini/profile-tunnel.sh" "$stage/profile-tunnel.sh"
 /usr/bin/install -m 700 "$release/ops/macmini/health-check.sh" "$stage/proxy-config-health-check"
 
 for name in \
-  render_profile.py refresh-profile.sh render_surfboard.py \
-  refresh-surfboard.sh serve_profile.py profile-tunnel.sh proxy-config-health-check; do
+  render_profile.py refresh-profile.sh serve_profile.py \
+  profile-tunnel.sh proxy-config-health-check; do
   /bin/mv -f "$stage/$name" "$bin_dir/$name"
 done
+if [[ "$surge_only" == false ]]; then
+  for name in render_surfboard.py refresh-surfboard.sh; do
+    /bin/mv -f "$stage/$name" "$bin_dir/$name"
+  done
+fi
 
 "$bin_dir/refresh-profile.sh"
-"$bin_dir/refresh-surfboard.sh"
+if [[ "$surge_only" == false ]]; then
+  "$bin_dir/refresh-surfboard.sh"
+fi
+/usr/libexec/PlistBuddy -c 'Set :StartInterval 3600' "$refresh_plist"
+/usr/bin/plutil -lint "$refresh_plist" >/dev/null
+/bin/launchctl bootout "gui/$uid/$refresh_label" >/dev/null 2>&1
+/bin/launchctl bootstrap "gui/$uid" "$refresh_plist"
 /bin/launchctl kickstart -k "gui/$uid/com.arronnrock.surge-profile-server"
 
 commit_tmp="$runtime/deployed-commit.$$"

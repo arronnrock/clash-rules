@@ -33,10 +33,19 @@ template_source="$source_dir/surge/surge.conf"
 substore_target="$(<"$target_file")"
 [[ "$substore_target" == *"@"* ]] || { print -u2 "invalid private Sub-Store SSH target"; exit 1; }
 
-/usr/bin/ssh -i "$key" \
-  -o BatchMode=yes -o ConnectTimeout=12 \
-  -o ServerAliveInterval=10 -o ServerAliveCountMax=2 \
-  "$substore_target" > "$nodes.tmp"
+for attempt in 1 2; do
+  if /usr/bin/ssh -i "$key" \
+    -o BatchMode=yes -o ConnectTimeout=6 \
+    -o ServerAliveInterval=10 -o ServerAliveCountMax=2 \
+    "$substore_target" > "$nodes.tmp"; then
+    break
+  fi
+  if (( attempt == 2 )); then
+    print -u2 "Sub-Store SSH fetch failed twice; retained previous profile"
+    exit 1
+  fi
+  /bin/sleep 1
+done
 [[ -s "$nodes.tmp" ]] || { print -u2 "Sub-Store returned an empty collection"; exit 1; }
 /bin/mv -f "$nodes.tmp" "$nodes"
 

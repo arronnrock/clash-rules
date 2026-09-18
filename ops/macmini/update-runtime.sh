@@ -119,6 +119,7 @@ rollback() {
   fi
   /bin/launchctl kickstart -k "gui/$uid/com.arronnrock.surge-profile-server" >/dev/null 2>&1
   print -u2 "deployment failed; previous runtime restored from $backup"
+  exit 1
 }
 trap rollback ERR
 

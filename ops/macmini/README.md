@@ -42,5 +42,4 @@ Run a read-only health check at any time:
 ```
 
 The Surge LaunchAgent refreshes hourly. A later GitHub push has no production
-effect until its exact commit is deployed. The legacy `--surge-only` argument
-is accepted as a no-op for bootstrap compatibility.
+effect until its exact commit is deployed.

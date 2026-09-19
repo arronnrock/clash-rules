@@ -1,12 +1,8 @@
 #!/bin/zsh
 set -euo pipefail
 
-if [[ $# -eq 2 && "$1" == "--surge-only" ]]; then
-  # Backward-compatible no-op while older bootstrap commands are retired.
-  shift
-fi
 if [[ $# -ne 1 || ! "$1" =~ ^[0-9a-f]{40}$ ]]; then
-  print -u2 "usage: proxy-config-update [--surge-only] FULL_40_CHARACTER_COMMIT"
+  print -u2 "usage: proxy-config-update FULL_40_CHARACTER_COMMIT"
   exit 2
 fi
 
@@ -156,22 +152,6 @@ commit_tmp="$runtime/deployed-commit.$$"
 /bin/chmod 600 "$commit_tmp"
 /bin/mv -f "$commit_tmp" "$base/deployed-commit"
 "$bin_dir/proxy-config-health-check"
-
-# Remove retired Surfboard runtime components only after the Surge-only runtime
-# has passed every health gate. These exact paths are no longer used by any
-# supported client.
-legacy_surfboard_label="com.arronnrock.surfboard-profile-refresh"
-legacy_surfboard_plist="$HOME/Library/LaunchAgents/$legacy_surfboard_label.plist"
-/bin/launchctl bootout "gui/$uid/$legacy_surfboard_label" >/dev/null 2>&1 || true
-/bin/rm -f \
-  "$legacy_surfboard_plist" \
-  "$bin_dir/render_surfboard.py" \
-  "$bin_dir/refresh-surfboard.sh" \
-  "$base/surfboard-v1.conf" \
-  "$base/surfboard-token" \
-  "$base/surfboard-vps-path-managed-url.txt" \
-  "$runtime/surfboard.conf" \
-  "$runtime/surfboard.nodes"
 
 # Update the stable entrypoint last, after the new release is healthy.
 /usr/bin/install -m 700 "$release/ops/macmini/update-runtime.sh" "$bin_dir/proxy-config-update.next"

@@ -8,7 +8,7 @@ import tempfile
 from unittest.mock import patch
 
 
-source = Path(__file__).resolve().parents[2] / "surfboard/scripts/macmini/serve_profiles.py"
+source = Path(__file__).resolve().parent / "serve_profiles.py"
 spec = importlib.util.spec_from_file_location("serve_profiles", source)
 gateway = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(gateway)
@@ -35,11 +35,8 @@ with tempfile.TemporaryDirectory(prefix="gateway-update-test-") as temporary:
     gateway.BASE = temporary
     root = Path(temporary)
     (root / "token").write_text("test-token")
-    (root / "surfboard-token").write_text("board-token")
     (root / "surge-v2.conf").write_text("[Proxy]\nTest = direct\n")
-    (root / "surfboard-v1.conf").write_text("[Proxy]\nTest = direct\n")
     (root / "surge-vps-path-managed-url.txt").write_text("https://example.invalid/surge")
-    (root / "surfboard-vps-path-managed-url.txt").write_text("https://example.invalid/surfboard")
 
     with patch.object(gateway, "refresh_surge", return_value=True) as refresh:
         assert request("/surge-v2.conf?token=test-token", head=True)[0] == [200]
@@ -51,8 +48,7 @@ with tempfile.TemporaryDirectory(prefix="gateway-update-test-") as temporary:
         assert refresh.call_count == 1
         assert request("/surge-v2.conf?token=test-token", health=True)[0] == [200]
         assert refresh.call_count == 1
-        assert b"interval=21600 strict=false" in request("/surfboard-v1.conf?token=board-token")[2]
-        assert refresh.call_count == 1
+        assert request("/removed-profile.conf?token=test-token")[0] == [404]
         assert request("/surge-v2.conf?token=bad")[0] == [404]
         assert refresh.call_count == 1
 

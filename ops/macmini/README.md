@@ -6,8 +6,8 @@ machine. The Mac mini runs only a validated, explicit commit from `main`.
 `proxy-config-update` maintains a bare repository under
 `~/Services/clash-rules`, expands immutable commit snapshots under `releases/`,
 and switches the `current` symlink only after source validation. It then stages
-the Surge/Surfboard renderers, refreshes both complete private profiles,
-restarts the existing profile gateway and checks the public endpoints plus the
+the Surge renderer, refreshes the complete private profile, restarts the
+existing profile gateway and checks the public endpoint plus the
 local OpenClaw gateway. A failed step restores the previous scripts, profiles
 and source pointer.
 
@@ -15,8 +15,8 @@ Production delivery does not depend on Tailscale Funnel. A dedicated launchd
 job keeps a reverse SSH tunnel from the Mac mini gateway at `127.0.0.1:13002`
 to one loopback-only port on the VPS. The tunnel key belongs to an unprivileged
 VPS account and is restricted to that single remote-listen address; it cannot
-open a shell or expose a public listener. VPS Nginx serves both clients from
-tokenized HTTPS paths and proxies only to that loopback port.
+open a shell or expose a public listener. VPS Nginx serves Surge from a
+tokenized HTTPS path and proxies only to that loopback port.
 
 The deployment does not create or copy credentials. Existing tokens, the
 forced-command Sub-Store SSH key, private node output and managed URLs remain
@@ -41,10 +41,6 @@ Run a read-only health check at any time:
 ~/Library/Application\ Support/SurgeProfileGateway/bin/proxy-config-health-check
 ```
 
-The Surge LaunchAgent refreshes hourly; Surfboard continues refreshing every six
-hours. A later GitHub push has no production effect until its exact commit is
-deployed.
-
-If the Mac mini has no active Surfboard token/profile, deploy a Surge-only
-change with `proxy-config-update --surge-only FULL_40_CHARACTER_COMMIT`. This
-keeps the existing Surfboard state untouched and checks only active endpoints.
+The Surge LaunchAgent refreshes hourly. A later GitHub push has no production
+effect until its exact commit is deployed. The legacy `--surge-only` argument
+is accepted as a no-op for bootstrap compatibility.

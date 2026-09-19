@@ -11,26 +11,12 @@ trap cleanup EXIT
 for required in source-dir deployed-commit token surge-v2.conf; do
   [[ -s "$base/$required" ]] || { print -u2 "missing runtime file: $required"; exit 1; }
 done
-surfboard_active=false
-if [[ -e "$base/surfboard-token" || -e "$base/surfboard-v1.conf" ]]; then
-  surfboard_active=true
-  [[ -s "$base/surfboard-token" && -s "$base/surfboard-v1.conf" ]] || {
-    print -u2 "Surfboard runtime is incomplete"
-    exit 1
-  }
-fi
 for secret in token; do
   [[ "$(/usr/bin/stat -f '%Lp' "$base/$secret")" == "600" ]] || {
     print -u2 "unsafe permission on $secret"
     exit 1
   }
 done
-if [[ "$surfboard_active" == true ]]; then
-  [[ "$(/usr/bin/stat -f '%Lp' "$base/surfboard-token")" == "600" ]] || {
-    print -u2 "unsafe permission on surfboard-token"
-    exit 1
-  }
-fi
 
 source_dir="$(<"$base/source-dir")"
 commit="$(<"$base/deployed-commit")"
@@ -42,9 +28,6 @@ for label in \
   com.arronnrock.surge-profile-refresh; do
   /bin/launchctl print "gui/$uid/$label" >/dev/null
 done
-if [[ "$surfboard_active" == true ]]; then
-  /bin/launchctl print "gui/$uid/com.arronnrock.surfboard-profile-refresh" >/dev/null
-fi
 /bin/launchctl print "gui/$uid/com.arronnrock.surge-profile-refresh" | \
   /usr/bin/grep -q 'run interval = 3600 seconds'
 if [[ -s "$base/profile-tunnel-target" ]]; then
@@ -64,9 +47,6 @@ fetch_local_profile() {
 }
 
 fetch_local_profile surge-v2.conf token "$temp_dir/surge.conf"
-if [[ "$surfboard_active" == true ]]; then
-  fetch_local_profile surfboard-v1.conf surfboard-token "$temp_dir/surfboard.conf"
-fi
 
 count_proxies() {
   /usr/bin/awk '
@@ -78,17 +58,9 @@ count_proxies() {
   ' "$1"
 }
 surge_count="$(count_proxies "$temp_dir/surge.conf")"
-surfboard_count="inactive"
 (( surge_count >= 4 )) || { print -u2 "Surge profile has too few proxies"; exit 1; }
-if [[ "$surfboard_active" == true ]]; then
-  surfboard_count="$(count_proxies "$temp_dir/surfboard.conf")"
-  (( surfboard_count >= 4 )) || { print -u2 "Surfboard profile has too few proxies"; exit 1; }
-fi
 
 url_files=(surge-vps-path-managed-url.txt)
-if [[ "$surfboard_active" == true ]]; then
-  url_files+=(surfboard-vps-path-managed-url.txt)
-fi
 for url_file in "${url_files[@]}"; do
   [[ -s "$base/$url_file" ]] || { print -u2 "missing public path URL: $url_file"; exit 1; }
   public_url="$(<"$base/$url_file")"
@@ -107,4 +79,4 @@ done
 /usr/bin/curl --silent --show-error --connect-timeout 3 --max-time 5 \
   http://127.0.0.1:18789/ -o /dev/null
 
-print "runtime healthy commit=$commit surge_proxies=$surge_count surfboard_proxies=$surfboard_count"
+print "runtime healthy commit=$commit surge_proxies=$surge_count"

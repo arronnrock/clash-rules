@@ -56,8 +56,6 @@ def main():
     parser.add_argument("--certificate-key", required=True)
     parser.add_argument("--surge-token-file", required=True)
     parser.add_argument("--surge-path-token-file", required=True)
-    parser.add_argument("--surfboard-token-file", required=True)
-    parser.add_argument("--surfboard-path-token-file", required=True)
     args = parser.parse_args()
 
     host = read(args.host_file, "public host")
@@ -69,8 +67,6 @@ def main():
     certificate_key = absolute_file(args.certificate_key, "certificate key")
     surge_token = read(args.surge_token_file, "Surge token", TOKEN)
     surge_path = read(args.surge_path_token_file, "Surge path token", PATH_TOKEN)
-    surfboard_token = read(args.surfboard_token_file, "Surfboard token", TOKEN)
-    surfboard_path = read(args.surfboard_path_token_file, "Surfboard path token", PATH_TOKEN)
 
     print("server {")
     print("  listen 443 ssl http2;")
@@ -85,7 +81,6 @@ def main():
     print("  add_header Cache-Control no-store always;")
     print()
     print(location("surge-v2", "surge-v2.conf", surge_path, surge_token, host), end="")
-    print(location("surfboard-v1", "surfboard-v1.conf", surfboard_path, surfboard_token, host), end="")
     print("  location / {")
     print("    return 404;")
     print("  }")

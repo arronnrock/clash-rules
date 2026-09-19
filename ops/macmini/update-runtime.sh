@@ -1,9 +1,8 @@
 #!/bin/zsh
 set -euo pipefail
 
-surge_only=false
 if [[ $# -eq 2 && "$1" == "--surge-only" ]]; then
-  surge_only=true
+  # Backward-compatible no-op while older bootstrap commands are retired.
   shift
 fi
 if [[ $# -ne 1 || ! "$1" =~ ^[0-9a-f]{40}$ ]]; then
@@ -80,11 +79,11 @@ backup="$backups/$timestamp"
 /bin/mkdir "$backup"
 /bin/chmod 700 "$backup"
 for name in \
-  render_profile.py refresh-profile.sh render_surfboard.py \
-  refresh-surfboard.sh serve_profile.py profile-tunnel.sh proxy-config-health-check; do
+  render_profile.py refresh-profile.sh serve_profile.py \
+  profile-tunnel.sh proxy-config-health-check; do
   [[ -e "$bin_dir/$name" ]] && /bin/cp -p "$bin_dir/$name" "$backup/$name"
 done
-for name in source-dir deployed-commit surge-v2.conf surfboard-v1.conf; do
+for name in source-dir deployed-commit surge-v2.conf; do
   [[ -e "$base/$name" ]] && /bin/cp -p "$base/$name" "$backup/$name"
 done
 /bin/cp -p "$refresh_plist" "$backup/surge-profile-refresh.plist"
@@ -93,15 +92,15 @@ rollback() {
   trap - ERR
   set +e
   for name in \
-    render_profile.py refresh-profile.sh render_surfboard.py \
-    refresh-surfboard.sh serve_profile.py profile-tunnel.sh proxy-config-health-check; do
+    render_profile.py refresh-profile.sh serve_profile.py \
+    profile-tunnel.sh proxy-config-health-check; do
     if [[ -e "$backup/$name" ]]; then
       /bin/cp -p "$backup/$name" "$bin_dir/$name"
     else
       /bin/rm -f "$bin_dir/$name"
     fi
   done
-  for name in source-dir deployed-commit surge-v2.conf surfboard-v1.conf; do
+  for name in source-dir deployed-commit surge-v2.conf; do
     if [[ -e "$backup/$name" ]]; then
       /bin/cp -p "$backup/$name" "$base/$name"
     else
@@ -135,11 +134,7 @@ stage="$runtime/deploy-stage.$$"
 /bin/mkdir "$stage"
 /usr/bin/install -m 700 "$release/surge/scripts/macmini/render_surge.py" "$stage/render_profile.py"
 /usr/bin/install -m 700 "$release/surge/scripts/macmini/refresh-surge.sh" "$stage/refresh-profile.sh"
-if [[ "$surge_only" == false ]]; then
-  /usr/bin/install -m 700 "$release/surfboard/scripts/macmini/render_surfboard.py" "$stage/render_surfboard.py"
-  /usr/bin/install -m 700 "$release/surfboard/scripts/macmini/refresh-surfboard.sh" "$stage/refresh-surfboard.sh"
-fi
-/usr/bin/install -m 600 "$release/surfboard/scripts/macmini/serve_profiles.py" "$stage/serve_profile.py"
+/usr/bin/install -m 600 "$release/ops/macmini/serve_profiles.py" "$stage/serve_profile.py"
 /usr/bin/install -m 700 "$release/ops/macmini/profile-tunnel.sh" "$stage/profile-tunnel.sh"
 /usr/bin/install -m 700 "$release/ops/macmini/health-check.sh" "$stage/proxy-config-health-check"
 
@@ -148,16 +143,8 @@ for name in \
   profile-tunnel.sh proxy-config-health-check; do
   /bin/mv -f "$stage/$name" "$bin_dir/$name"
 done
-if [[ "$surge_only" == false ]]; then
-  for name in render_surfboard.py refresh-surfboard.sh; do
-    /bin/mv -f "$stage/$name" "$bin_dir/$name"
-  done
-fi
 
 "$bin_dir/refresh-profile.sh"
-if [[ "$surge_only" == false ]]; then
-  "$bin_dir/refresh-surfboard.sh"
-fi
 /usr/libexec/PlistBuddy -c 'Set :StartInterval 3600' "$refresh_plist"
 /usr/bin/plutil -lint "$refresh_plist" >/dev/null
 /bin/launchctl bootout "gui/$uid/$refresh_label" >/dev/null 2>&1
@@ -169,6 +156,22 @@ commit_tmp="$runtime/deployed-commit.$$"
 /bin/chmod 600 "$commit_tmp"
 /bin/mv -f "$commit_tmp" "$base/deployed-commit"
 "$bin_dir/proxy-config-health-check"
+
+# Remove retired Surfboard runtime components only after the Surge-only runtime
+# has passed every health gate. These exact paths are no longer used by any
+# supported client.
+legacy_surfboard_label="com.arronnrock.surfboard-profile-refresh"
+legacy_surfboard_plist="$HOME/Library/LaunchAgents/$legacy_surfboard_label.plist"
+/bin/launchctl bootout "gui/$uid/$legacy_surfboard_label" >/dev/null 2>&1 || true
+/bin/rm -f \
+  "$legacy_surfboard_plist" \
+  "$bin_dir/render_surfboard.py" \
+  "$bin_dir/refresh-surfboard.sh" \
+  "$base/surfboard-v1.conf" \
+  "$base/surfboard-token" \
+  "$base/surfboard-vps-path-managed-url.txt" \
+  "$runtime/surfboard.conf" \
+  "$runtime/surfboard.nodes"
 
 # Update the stable entrypoint last, after the new release is healthy.
 /usr/bin/install -m 700 "$release/ops/macmini/update-runtime.sh" "$bin_dir/proxy-config-update.next"

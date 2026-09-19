@@ -10,10 +10,7 @@ REQUIRED = (
     "surge/surge.conf",
     "surge/scripts/macmini/render_surge.py",
     "surge/scripts/macmini/refresh-surge.sh",
-    "surfboard/surfboard.conf",
-    "surfboard/scripts/macmini/render_surfboard.py",
-    "surfboard/scripts/macmini/refresh-surfboard.sh",
-    "surfboard/scripts/macmini/serve_profiles.py",
+    "ops/macmini/serve_profiles.py",
     "ops/macmini/health-check.sh",
     "ops/macmini/profile-tunnel.sh",
     "ops/macmini/profile-tunnel.plist.template",
@@ -44,7 +41,6 @@ def main():
 
     templates = {
         "Surge": (root / "surge/surge.conf", "# Sub-Store injects the private Surge proxy list here."),
-        "Surfboard": (root / "surfboard/surfboard.conf", "# Sub-Store injects the private Surfboard proxy list here."),
     }
     for name, (path, marker) in templates.items():
         content = path.read_text(encoding="utf-8")
@@ -58,15 +54,13 @@ def main():
 
     python_files = [
         root / "surge/scripts/macmini/render_surge.py",
-        root / "surfboard/scripts/macmini/render_surfboard.py",
-        root / "surfboard/scripts/macmini/serve_profiles.py",
+        root / "ops/macmini/serve_profiles.py",
         root / "ops/macmini/test_serve_profiles.py",
         root / "ops/macmini/validate-runtime.py",
         root / "ops/vps/render-profile-nginx.py",
     ]
     shell_files = [
         root / "surge/scripts/macmini/refresh-surge.sh",
-        root / "surfboard/scripts/macmini/refresh-surfboard.sh",
         root / "ops/macmini/health-check.sh",
         root / "ops/macmini/profile-tunnel.sh",
         root / "ops/macmini/update-runtime.sh",
@@ -91,11 +85,6 @@ def main():
                 root / "surge/surge.conf",
                 temp / "surge-rendered.conf",
             ),
-            (
-                root / "surfboard/scripts/macmini/render_surfboard.py",
-                root / "surfboard/surfboard.conf",
-                temp / "surfboard-rendered.conf",
-            ),
         )
         for renderer, template, output in render_jobs:
             with output.open("w", encoding="utf-8") as handle:
@@ -114,8 +103,6 @@ def main():
             "certificate-key": "placeholder\n",
             "surge-token": "s" * 32 + "\n",
             "surge-path": "a" * 64 + "\n",
-            "surfboard-token": "b" * 32 + "\n",
-            "surfboard-path": "c" * 64 + "\n",
         }.items():
             path = temp / name
             path.write_text(value, encoding="utf-8")
@@ -131,8 +118,6 @@ def main():
                     "--certificate-key", str(nginx_inputs["certificate-key"]),
                     "--surge-token-file", str(nginx_inputs["surge-token"]),
                     "--surge-path-token-file", str(nginx_inputs["surge-path"]),
-                    "--surfboard-token-file", str(nginx_inputs["surfboard-token"]),
-                    "--surfboard-path-token-file", str(nginx_inputs["surfboard-path"]),
                 ],
                 stdout=handle,
             )
@@ -140,9 +125,7 @@ def main():
         for required in (
             "127.0.0.1:23132",
             "/surge-v2/" + "a" * 64,
-            "/surfboard-v1/" + "c" * 64,
             "/surge-v2.conf?token=" + "s" * 32,
-            "/surfboard-v1.conf?token=" + "b" * 32,
         ):
             if required not in nginx:
                 fail("Nginx renderer lost required route: " + required[:32])

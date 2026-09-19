@@ -257,8 +257,7 @@ also fetches `private` before each authenticated Surge profile GET, so tapping
 Update in Surge downloads freshly rendered nodes. If the source fetch or render
 fails, the gateway returns an update error and keeps the last-good profile.
 The Surge managed header requests hourly updates while the main app is running;
-iOS may delay automatic updates in the background. Surfboard stays on its
-separate six-hour schedule.
+iOS may delay automatic updates in the background.
 
 Both the MacBook injector and Mac mini renderer keep US fallback candidates in
 stable non-JMS-first order, with JMS/JustMySocks (including legacy c87s1/2/3
@@ -483,8 +482,7 @@ node surge/scripts/validate-v2.mjs
 The phase is complete when the profile loads, all four region groups populate,
 OpenAI stays in the manually selected region, PayPal uses a US automatic node, mainland
 destinations are direct, ordinary international traffic uses WIFI, the
-securities matrix behaves as specified, and manual node selection works. Do not
-begin Surfboard migration in this phase.
+securities matrix behaves as specified, and manual node selection works.
 
 ## References
 

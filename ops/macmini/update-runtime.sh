@@ -165,7 +165,18 @@ commit_tmp="$runtime/deployed-commit.$$"
 /usr/bin/printf '%s\n' "$commit" > "$commit_tmp"
 /bin/chmod 600 "$commit_tmp"
 /bin/mv -f "$commit_tmp" "$base/deployed-commit"
-"$bin_dir/proxy-config-health-check"
+runtime_healthy=false
+for attempt in 1 2 3 4 5; do
+  if "$bin_dir/proxy-config-health-check" >/dev/null 2>&1; then
+    runtime_healthy=true
+    break
+  fi
+  /bin/sleep 2
+done
+[[ "$runtime_healthy" == true ]] || {
+  print -u2 "new Surge runtime did not become healthy"
+  exit 1
+}
 
 # Update the stable entrypoint last, after the new release is healthy.
 /usr/bin/install -m 700 "$release/ops/macmini/update-runtime.sh" "$bin_dir/proxy-config-update.next"

@@ -252,11 +252,11 @@ issue, copy it into `surge/`, or override the `.private/` Git ignore rule.
 
 ### Surge Mac automatic node refresh
 
-The Mac mini refreshes the complete Surge profile hourly. Its managed gateway
+The Mac mini refreshes the complete Surge profile every three hours. Its managed gateway
 also fetches `private` before each authenticated Surge profile GET, so tapping
 Update in Surge downloads freshly rendered nodes. If the source fetch or render
 fails, the gateway returns an update error and keeps the last-good profile.
-The Surge managed header requests hourly updates while the main app is running;
+The Surge managed header requests updates every three hours while the main app is running;
 iOS may delay automatic updates in the background.
 
 Both the MacBook injector and Mac mini renderer keep US fallback candidates in

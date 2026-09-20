@@ -141,7 +141,7 @@ for name in \
 done
 
 "$bin_dir/refresh-profile.sh"
-/usr/libexec/PlistBuddy -c 'Set :StartInterval 3600' "$refresh_plist"
+/usr/libexec/PlistBuddy -c 'Set :StartInterval 10800' "$refresh_plist"
 /usr/bin/plutil -lint "$refresh_plist" >/dev/null
 /bin/launchctl bootout "gui/$uid/$refresh_label" >/dev/null 2>&1
 /bin/launchctl bootstrap "gui/$uid" "$refresh_plist"

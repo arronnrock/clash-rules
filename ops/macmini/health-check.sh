@@ -29,7 +29,7 @@ for label in \
   /bin/launchctl print "gui/$uid/$label" >/dev/null
 done
 /bin/launchctl print "gui/$uid/com.arronnrock.surge-profile-refresh" | \
-  /usr/bin/grep -q 'run interval = 3600 seconds'
+  /usr/bin/grep -q 'run interval = 10800 seconds'
 if [[ -s "$base/profile-tunnel-target" ]]; then
   /bin/launchctl print "gui/$uid/com.arronnrock.profile-gateway-tunnel" >/dev/null
 fi

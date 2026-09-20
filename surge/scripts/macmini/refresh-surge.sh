@@ -4,7 +4,7 @@ set -euo pipefail
 base_dir="$HOME/Library/Application Support/SurgeProfileGateway"
 runtime_dir="$base_dir/runtime"
 /bin/mkdir -p "$runtime_dir"
-# The hourly job and client-triggered refresh can overlap. Keep one writer.
+# The scheduled job and client-triggered refresh can overlap. Keep one writer.
 if [[ "${SURGE_REFRESH_LOCKED:-}" != "1" ]]; then
   SURGE_REFRESH_LOCKED=1 exec /usr/bin/lockf -k -t 18 \
     "$runtime_dir/surge-refresh.lock" /bin/zsh "$0"

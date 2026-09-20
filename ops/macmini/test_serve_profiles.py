@@ -43,7 +43,7 @@ with tempfile.TemporaryDirectory(prefix="gateway-update-test-") as temporary:
         assert refresh.call_count == 0
         status, headers, body = request("/surge-v2.conf?token=test-token")
         assert status == [200]
-        assert body.startswith(b"#!MANAGED-CONFIG https://example.invalid/surge interval=3600 strict=false\n")
+        assert body.startswith(b"#!MANAGED-CONFIG https://example.invalid/surge interval=10800 strict=false\n")
         assert headers["profile-update-interval"] == "1"
         assert refresh.call_count == 1
         assert request("/surge-v2.conf?token=test-token", health=True)[0] == [200]

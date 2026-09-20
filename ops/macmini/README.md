@@ -41,5 +41,5 @@ Run a read-only health check at any time:
 ~/Library/Application\ Support/SurgeProfileGateway/bin/proxy-config-health-check
 ```
 
-The Surge LaunchAgent refreshes hourly. A later GitHub push has no production
+The Surge LaunchAgent refreshes every three hours. A later GitHub push has no production
 effect until its exact commit is deployed.

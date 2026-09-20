@@ -87,7 +87,7 @@ class Handler(BaseHTTPRequestHandler):
         if not managed_url.startswith("https://"):
             self.send_error(503)
             return
-        directive = "#!MANAGED-CONFIG {} interval=3600 strict=false\n".format(managed_url)
+        directive = "#!MANAGED-CONFIG {} interval=10800 strict=false\n".format(managed_url)
         body = directive.encode("utf-8") + profile
         self.send_response(200)
         self.send_header("Content-Type", "text/plain; charset=utf-8")

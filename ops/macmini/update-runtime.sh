@@ -141,6 +141,7 @@ for name in \
 done
 
 "$bin_dir/refresh-profile.sh"
+print "phase=reload-refresh-task"
 /usr/libexec/PlistBuddy -c 'Set :StartInterval 10800' "$refresh_plist"
 /usr/bin/plutil -lint "$refresh_plist" >/dev/null
 /bin/launchctl bootout "gui/$uid/$refresh_label" >/dev/null 2>&1
@@ -159,12 +160,14 @@ done
   print -u2 "failed to load three-hour Surge refresh task"
   exit 1
 }
+print "phase=restart-profile-server"
 /bin/launchctl kickstart -k "gui/$uid/com.arronnrock.surge-profile-server"
 
 commit_tmp="$runtime/deployed-commit.$$"
 /usr/bin/printf '%s\n' "$commit" > "$commit_tmp"
 /bin/chmod 600 "$commit_tmp"
 /bin/mv -f "$commit_tmp" "$base/deployed-commit"
+print "phase=runtime-health"
 runtime_healthy=false
 for attempt in 1 2 3 4 5; do
   if "$bin_dir/proxy-config-health-check" >/dev/null 2>&1; then

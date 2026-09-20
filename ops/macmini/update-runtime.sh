@@ -144,7 +144,21 @@ done
 /usr/libexec/PlistBuddy -c 'Set :StartInterval 10800' "$refresh_plist"
 /usr/bin/plutil -lint "$refresh_plist" >/dev/null
 /bin/launchctl bootout "gui/$uid/$refresh_label" >/dev/null 2>&1
-/bin/launchctl bootstrap "gui/$uid" "$refresh_plist"
+refresh_agent_loaded=false
+for attempt in 1 2 3; do
+  if /bin/launchctl bootstrap "gui/$uid" "$refresh_plist" >/dev/null 2>&1 && \
+    /bin/launchctl print "gui/$uid/$refresh_label" 2>/dev/null | \
+      /usr/bin/grep -q 'run interval = 10800 seconds'; then
+    refresh_agent_loaded=true
+    break
+  fi
+  /bin/launchctl bootout "gui/$uid/$refresh_label" >/dev/null 2>&1 || true
+  /bin/sleep 1
+done
+[[ "$refresh_agent_loaded" == true ]] || {
+  print -u2 "failed to load three-hour Surge refresh task"
+  exit 1
+}
 /bin/launchctl kickstart -k "gui/$uid/com.arronnrock.surge-profile-server"
 
 commit_tmp="$runtime/deployed-commit.$$"
